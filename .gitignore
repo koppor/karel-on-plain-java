@@ -4,3 +4,5 @@ solutions/
 *.zip
 # IntelliJ / build output
 out/
+# local test copies of the extracted ZIP
+KarelExercise01/
