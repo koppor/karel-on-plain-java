@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -38,7 +39,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 /**
  * Karel the Robot for PROG1 (THU), plain Java 25 with Swing, no libraries.
  *
- * <p>Version 1.0.0 (2026-10-21). Semantic versioning: major = commands change incompatibly,
+ * <p>Version 1.1.0 (2026-10-21). Semantic versioning: major = commands change incompatibly,
  * minor = new worlds or features, patch = fixes.
  *
  * <p>Usage in a compact source file next to the folder {@code karel}:
@@ -62,7 +63,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public final class Karel {
 
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.1.0";
     public static final String RELEASE_DATE = "2026-10-21";
 
     /** Thrown when Karel cannot carry out a command. */
@@ -477,6 +478,10 @@ public final class Karel {
     private static JLabel status;
     private static JCheckBox showGoal;
     private static JButton replay;
+    private static JSlider stepSlider;
+    private static JLabel stepLabel;
+    /** True while the program itself moves the step slider (not the user). */
+    private static boolean sliderUpdate;
     /** Maps of all states of the run, for Replay. */
     private static final List<String> HISTORY = new ArrayList<>();
     private static String finalMessage;
@@ -663,11 +668,14 @@ public final class Karel {
     }
 
     private static void step() {
+        int last;
         synchronized (LOCK) {
             HISTORY.add(state.toMap());
+            last = HISTORY.size() - 1;
         }
         steps++;
         if (!HEADLESS) {
+            showStep(last, last);
             updateStatus("Step " + steps, Color.BLACK);
             pause();
         }
@@ -710,29 +718,49 @@ public final class Karel {
             finalMessage = message;
             finalColor = color;
             updateStatus(message, color);
-            SwingUtilities.invokeLater(() -> replay.setEnabled(true));
+            SwingUtilities.invokeLater(() -> {
+                replay.setEnabled(true);
+                stepSlider.setEnabled(true);
+            });
         }
+    }
+
+    /** Moves the step slider to {@code index} of {@code last} steps; callable from any thread. */
+    private static void showStep(int index, int last) {
+        SwingUtilities.invokeLater(() -> {
+            sliderUpdate = true;
+            stepSlider.setMaximum(last);
+            stepSlider.setValue(index);
+            sliderUpdate = false;
+            stepLabel.setText(index + " / " + last);
+        });
+    }
+
+    /** Shows the recorded state after step {@code index}; called when the user drags the step slider. */
+    private static void selectStep(int index) {
+        synchronized (LOCK) {
+            state = new State(HISTORY.get(index));
+        }
+        stepLabel.setText(index + " / " + (HISTORY.size() - 1));
+        panel.repaint();
     }
 
     /** Plays the recorded run again at the current speed; does not run the program again. */
     private static void replay() {
-        String last;
-        synchronized (LOCK) {
-            last = state.toMap();
-        }
-        for (int i = 0; i < HISTORY.size(); i++) {
+        int last = HISTORY.size() - 1;
+        for (int i = 0; i <= last; i++) {
             synchronized (LOCK) {
                 state = new State(HISTORY.get(i));
             }
-            updateStatus("Replay: step " + i + " of " + (HISTORY.size() - 1), Color.BLACK);
+            showStep(i, last);
+            updateStatus("Replay: step " + i + " of " + last, Color.BLACK);
             pause();
         }
-        synchronized (LOCK) {
-            state = new State(last);
-        }
-        panel.repaint();
         updateStatus(finalMessage, finalColor);
-        SwingUtilities.invokeLater(() -> replay.setEnabled(true));
+        SwingUtilities.invokeLater(() -> {
+            replay.setEnabled(true);
+            stepSlider.setEnabled(true);
+        });
     }
 
     private static String difference() {
@@ -797,14 +825,35 @@ public final class Karel {
 
         JPanel controls = new JPanel(new BorderLayout(8, 4));
         controls.setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
+        // step slider: follows the run; after the end the user can drag it to any step
+        stepSlider = new JSlider(0, 0, 0);
+        stepSlider.setEnabled(false);
+        stepSlider.addChangeListener(e -> {
+            if (!sliderUpdate && stepSlider.isEnabled()) {
+                selectStep(stepSlider.getValue());
+            }
+        });
+        stepLabel = new JLabel("0 / 0");
+        JLabel stepCaption = new JLabel("Step");
+        JLabel speedCaption = new JLabel("Speed");
+        Dimension caption = speedCaption.getPreferredSize();
+        stepCaption.setPreferredSize(caption);
+        stepLabel.setPreferredSize(new Dimension(
+                stepLabel.getFontMetrics(stepLabel.getFont()).stringWidth("0000 / 0000"), caption.height));
+        JPanel stepRow = new JPanel(new BorderLayout(8, 0));
+        stepRow.add(stepCaption, BorderLayout.WEST);
+        stepRow.add(stepSlider, BorderLayout.CENTER);
+        stepRow.add(stepLabel, BorderLayout.EAST);
+
         JPanel top = new JPanel(new BorderLayout(8, 0));
-        top.add(new JLabel("Speed"), BorderLayout.WEST);
+        top.add(speedCaption, BorderLayout.WEST);
         top.add(speed, BorderLayout.CENTER);
         top.add(showGoal, BorderLayout.EAST);
         replay = new JButton("Replay");
         replay.setEnabled(false);
         replay.addActionListener(e -> {
             replay.setEnabled(false);
+            stepSlider.setEnabled(false);
             new Thread(Karel::replay).start();
         });
         JButton close = new JButton("Close");
@@ -813,7 +862,10 @@ public final class Karel {
         buttons.add(replay);
         buttons.add(Box.createHorizontalStrut(8));
         buttons.add(close);
-        controls.add(top, BorderLayout.NORTH);
+        JPanel sliders = new JPanel(new GridLayout(0, 1, 0, 2));
+        sliders.add(stepRow);
+        sliders.add(top);
+        controls.add(sliders, BorderLayout.NORTH);
         controls.add(status, BorderLayout.CENTER);
         controls.add(buttons, BorderLayout.SOUTH);
 

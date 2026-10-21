@@ -6,7 +6,7 @@ Karel in plain Java 25 (Swing, no libraries), works in IntelliJ with compact sou
 
 | Path | Content | Moodle |
 |---|---|---|
-| `src/karel/Karel.java` | engine, version 1.0.0 (2026-10-21): worlds, commands, window (speed slider, "Show goal", goal check at program end) | yes |
+| `src/karel/Karel.java` | engine (version in the header, history in `CHANGELOG.md`): worlds, commands, window (step slider, speed slider, "Show goal", goal check at program end, Replay, Close) | yes |
 | `src/FirstKarelProgram.java` | first program (three commands in `DEFUSE_ONE_BOMB`) for the first runs before the exercises | yes (in the ZIP) |
 | `src/KarelExercise01.java` | exercise 01: starter file for students | yes |
 | `KarelExercise01.zip` | complete IntelliJ project (`.idea/`, `KarelExercise01.iml`, `src/karel/Karel.java`, `src/FirstKarelProgram.java`, `src/KarelExercise01.java`), no top-level folder; build with `make_zip.ps1` after every change | yes |
