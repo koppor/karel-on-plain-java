@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,12 +24,16 @@ import java.util.Random;
 import java.util.function.Supplier;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Karel the Robot for PROG1 (THU), plain Java 25 with Swing, no libraries.
@@ -471,6 +476,11 @@ public final class Karel {
     private static JPanel panel;
     private static JLabel status;
     private static JCheckBox showGoal;
+    private static JButton replay;
+    /** Maps of all states of the run, for Replay. */
+    private static final List<String> HISTORY = new ArrayList<>();
+    private static String finalMessage;
+    private static Color finalColor;
 
     private Karel() {
     }
@@ -511,6 +521,7 @@ public final class Karel {
         worldName = "World." + world.name();
         state = new State(maps[0]);
         goal = new State(maps[1]);
+        HISTORY.add(state.toMap());
         String snapshot = System.getProperty("karel.snapshot");
         if (snapshot != null) {
             if (Boolean.getBoolean("karel.snapshotEnd")) {
@@ -652,6 +663,9 @@ public final class Karel {
     }
 
     private static void step() {
+        synchronized (LOCK) {
+            HISTORY.add(state.toMap());
+        }
         steps++;
         if (!HEADLESS) {
             updateStatus("Step " + steps, Color.BLACK);
@@ -693,8 +707,32 @@ public final class Karel {
         if (HEADLESS) {
             System.out.print(state.toMap());
         } else {
-            updateStatus(message + " – close the window to end", color);
+            finalMessage = message;
+            finalColor = color;
+            updateStatus(message, color);
+            SwingUtilities.invokeLater(() -> replay.setEnabled(true));
         }
+    }
+
+    /** Plays the recorded run again at the current speed; does not run the program again. */
+    private static void replay() {
+        String last;
+        synchronized (LOCK) {
+            last = state.toMap();
+        }
+        for (int i = 0; i < HISTORY.size(); i++) {
+            synchronized (LOCK) {
+                state = new State(HISTORY.get(i));
+            }
+            updateStatus("Replay: step " + i + " of " + (HISTORY.size() - 1), Color.BLACK);
+            pause();
+        }
+        synchronized (LOCK) {
+            state = new State(last);
+        }
+        panel.repaint();
+        updateStatus(finalMessage, finalColor);
+        SwingUtilities.invokeLater(() -> replay.setEnabled(true));
     }
 
     private static String difference() {
@@ -723,14 +761,27 @@ public final class Karel {
     private static final int CELL = 48;
 
     private static void createWindow() {
+        try {
+            // native look of the operating system (Windows, macOS) instead of Java's own "Metal" look
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ReflectiveOperationException | UnsupportedLookAndFeelException e) {
+            // keep the default look
+        }
         JFrame frame = new JFrame("Karel " + VERSION + " (" + RELEASE_DATE + ") – " + worldName);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
                 synchronized (LOCK) {
-                    paintWorld((Graphics2D) g, showGoal.isSelected());
+                    // scale the world to the window size, centred (e.g. maximised on a projector)
+                    double worldW = state.width * CELL + 2;
+                    double worldH = state.height * CELL + 2;
+                    double scale = Math.min(getWidth() / worldW, getHeight() / worldH);
+                    g2.translate((getWidth() - worldW * scale) / 2 + 1, (getHeight() - worldH * scale) / 2 + 1);
+                    g2.scale(scale, scale);
+                    paintWorld(g2, showGoal.isSelected());
                 }
             }
         };
@@ -750,8 +801,21 @@ public final class Karel {
         top.add(new JLabel("Speed"), BorderLayout.WEST);
         top.add(speed, BorderLayout.CENTER);
         top.add(showGoal, BorderLayout.EAST);
+        replay = new JButton("Replay");
+        replay.setEnabled(false);
+        replay.addActionListener(e -> {
+            replay.setEnabled(false);
+            new Thread(Karel::replay).start();
+        });
+        JButton close = new JButton("Close");
+        close.addActionListener(e -> System.exit(0));
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        buttons.add(replay);
+        buttons.add(Box.createHorizontalStrut(8));
+        buttons.add(close);
         controls.add(top, BorderLayout.NORTH);
-        controls.add(status, BorderLayout.SOUTH);
+        controls.add(status, BorderLayout.CENTER);
+        controls.add(buttons, BorderLayout.SOUTH);
 
         frame.add(panel, BorderLayout.CENTER);
         frame.add(controls, BorderLayout.SOUTH);
