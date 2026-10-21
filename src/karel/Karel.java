@@ -53,7 +53,7 @@ import javax.swing.SwingUtilities;
  *
  * <p>Developer mode: {@code -Dkarel.headless=true} runs without window and delay and prints the
  * result and the final map. {@code -Dkarel.snapshot=world.png} (with {@code -Dkarel.snapshotGoal=true})
- * saves the start world as an image and exits.
+ * saves the start world as an image and exits; {@code -Dkarel.snapshotEnd=true} saves the goal state instead.
  */
 public final class Karel {
 
@@ -513,6 +513,9 @@ public final class Karel {
         goal = new State(maps[1]);
         String snapshot = System.getProperty("karel.snapshot");
         if (snapshot != null) {
+            if (Boolean.getBoolean("karel.snapshotEnd")) {
+                state = goal;
+            }
             saveSnapshot(snapshot, Boolean.getBoolean("karel.snapshotGoal"));
             System.exit(0);
         }
