@@ -1,0 +1,6 @@
+# sample solutions stay private (exercises)
+solutions/
+# built by make_zip.ps1
+*.zip
+# IntelliJ / build output
+out/
