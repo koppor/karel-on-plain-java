@@ -7,14 +7,13 @@ Karel in plain Java 25 (Swing, no libraries), works in IntelliJ with compact sou
 | Path | Content | Moodle |
 |---|---|---|
 | `src/karel/Karel.java` | engine (version in the header, history in `CHANGELOG.md`): worlds, commands, window (step slider, speed slider, "Show goal", goal check at program end, Replay, Close) | yes |
-| `src/FirstKarelProgram.java` | first program (three commands in `DEFUSE_ONE_BOMB`) for the first runs before the exercises | yes (in the ZIP) |
-| `src/KarelExercise01.java` | exercise 01: starter file for students | yes |
-| `KarelExercise01.zip` | complete IntelliJ project (`.idea/`, `KarelExercise01.iml`, `src/karel/Karel.java`, `src/FirstKarelProgram.java`, `src/KarelExercise01.java`), no top-level folder; build with `make_zip.ps1` after every change | yes |
-| `intellij/` | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configurations `FirstKarelProgram` and `KarelExercise01`, `KarelExercise01.iml` (source folder `src`) | – |
+| `src/FirstKarelProgram.java` | first program (three commands in `DEFUSE_ONE_BOMB`) with the list of commands and conditions as comments; students copy it for every task (one file per task, e.g. `ObtainArtifact.java`) | yes (in the ZIP) |
+| `KarelExercise01.zip` | complete IntelliJ project (`.idea/`, `KarelExercise01.iml`, `src/karel/Karel.java`, `src/FirstKarelProgram.java`), no top-level folder; build with `make_zip.ps1` after every change | yes |
+| `intellij/` | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration `FirstKarelProgram`, `KarelExercise01.iml` (source folder `src`) | – |
 | `make_zip.ps1` | builds `KarelExercise01.zip` from `intellij/` + `src/` | – |
 | `solutions/KarelExercise01Solutions.java` | sample solutions, after UHH `SE1_01_KarelLoesungen.pdf`, `repeat (n)` → `for` | **not** before the exercise |
 
-Students extract the ZIP (Explorer: Extract All gives the folder `KarelExercise01`), open that folder in IntelliJ (File, Open; This Window/New Window; Trust Project with the Defender option unticked) and run `src/KarelExercise01.java`. Worlds are chosen with the enum: `openWorld(World.OBTAIN_ARTIFACT)`; `World.` + Ctrl+Space lists all. The project JDK is named `25` in `misc.xml`; if IntelliJ has no JDK with that name it offers Setup SDK (not yet tried in IntelliJ, 2026-10-21). The window stays open after the program ends and shows "Goal reached" or what is still wrong; close it to end the program. Errors (wall ahead, no beeper) appear in the Run window with a link to the line.
+Students extract the ZIP (Explorer: Extract All gives the folder `KarelExercise01`), open that folder in IntelliJ (File, Open; This Window/New Window; Trust Project with the Defender option unticked) and run `src/FirstKarelProgram.java`; for each task they copy that file (Ctrl+C, Ctrl+V on `src`) and name it after the task. Until 1.0.0 the ZIP had a starter `KarelExercise01.java` with all tasks in one file; removed in 1.1.0 because students wrote everything into one file and the call `obtainArtifact();` came before own commands were understood (OK 2026-10-21). Worlds are chosen with the enum: `openWorld(World.OBTAIN_ARTIFACT)`; `World.` + Ctrl+Space lists all. The project JDK is named `25` in `misc.xml`; if IntelliJ has no JDK with that name it offers Setup SDK (not yet tried in IntelliJ, 2026-10-21). The window stays open after the program ends and shows "Goal reached" or what is still wrong; close it to end the program. Errors (wall ahead, no beeper) appear in the Run window with a link to the line.
 
 ## Worlds (Karel 1.0.0, used in exercise 01)
 

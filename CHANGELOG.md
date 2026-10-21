@@ -11,6 +11,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 - Step slider above the speed slider: follows the run; after the end, drag it to see the world after any step. Replay moves it along.
 
+### Changed
+
+- Exercise project (ZIP): starter `KarelExercise01.java` removed; one file per task, copied from `FirstKarelProgram.java`, which now lists the commands and conditions.
+
 ## [1.0.0] – 2026-10-21
 
 Initial release.
