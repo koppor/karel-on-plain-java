@@ -7,9 +7,10 @@ Karel in plain Java 25 (Swing, no libraries), works in IntelliJ with compact sou
 | Path | Content | Moodle |
 |---|---|---|
 | `src/karel/Karel.java` | engine, version 1.0.0 (2026-10-21): worlds, commands, window (speed slider, "Show goal", goal check at program end) | yes |
+| `src/FirstKarelProgram.java` | first program (three commands in `DEFUSE_ONE_BOMB`) for the first runs before the exercises | yes (in the ZIP) |
 | `src/KarelExercise01.java` | exercise 01: starter file for students | yes |
-| `KarelExercise01.zip` | complete IntelliJ project (`.idea/`, `KarelExercise01.iml`, `src/karel/Karel.java`, `src/KarelExercise01.java`), no top-level folder; build with `make_zip.ps1` after every change | yes |
-| `intellij/` | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration `KarelExercise01`, `KarelExercise01.iml` (source folder `src`) | – |
+| `KarelExercise01.zip` | complete IntelliJ project (`.idea/`, `KarelExercise01.iml`, `src/karel/Karel.java`, `src/FirstKarelProgram.java`, `src/KarelExercise01.java`), no top-level folder; build with `make_zip.ps1` after every change | yes |
+| `intellij/` | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configurations `FirstKarelProgram` and `KarelExercise01`, `KarelExercise01.iml` (source folder `src`) | – |
 | `make_zip.ps1` | builds `KarelExercise01.zip` from `intellij/` + `src/` | – |
 | `solutions/KarelExercise01Solutions.java` | sample solutions, after UHH `SE1_01_KarelLoesungen.pdf`, `repeat (n)` → `for` | **not** before the exercise |
 
