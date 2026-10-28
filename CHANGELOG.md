@@ -18,7 +18,7 @@ Initial public release.
 - Window with step slider, speed slider, Show goal, status line, Replay; goal check at the end of the program; errors with a message that names the command and the reason.
 - Developer mode: `-Dkarel.headless=true`, `-Dkarel.snapshot=<file.png>` (`-Dkarel.snapshotGoal`, `-Dkarel.snapshotEnd`).
 - Requirements in `docs/requirements.md` with OpenFastTrace tags in the code; CI compiles with `-Werror`, runs the starter headless (also under a Turkish locale) and traces the requirements.
-- `make_zip.ps1 -Exercise NN` builds the exercise project `KarelExerciseNN-Karel-v<version>.zip`.
+- `make_zip.ps1` builds the project students open, `Karel-v<version>.zip`.
 
 [Unreleased]: https://github.com/koppor/karel-on-plain-java/compare/v1.3.1...HEAD
 [1.3.1]: https://github.com/koppor/karel-on-plain-java/releases/tag/v1.3.1

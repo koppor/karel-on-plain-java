@@ -6,7 +6,7 @@ Rules for agent sessions in this folder. Everything technical is in `CONTRIBUTIN
 - Change the engine only with a requirement: add or update the `req` in `docs/requirements.md`, tag the code `// [impl->req~…~1]`,
   run `./gg.cmd gh/itsallcode/openfasttrace trace docs src` and keep it at "ok" (CI runs it too).
 - After every change of `src/`: compile with `-Xlint:all`, run all `solutions/*.java` headless (random worlds with several seeds),
-  rebuild the ZIP with `make_zip.ps1 -Exercise NN`.
+  rebuild the ZIP with `make_zip.ps1`.
 - A version that was handed out is never changed; bump `VERSION`/`RELEASE_DATE` and write `CHANGELOG.md` instead.
 - Task numbers already handed out never change (`CONTRIBUTING.md`, Worlds). New tasks get the next block of ten.
 - Task texts in `TEXTS` and on the slides must stay identical; `README.md` lists them for students.
