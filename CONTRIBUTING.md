@@ -54,7 +54,7 @@ code that implements it. Check with [OpenFastTrace](https://github.com/itsallcod
 ./gg.cmd gh/itsallcode/openfasttrace trace docs src      (Windows: gg.cmd gh/itsallcode/openfasttrace trace docs src)
 ```
 
-`ok` and exit code 0 mean full coverage. CI (`.github/workflows/ci.yml`) runs the same command on every push through the gg GitHub Action (`eirikb/gg/action@main`, which passes the workflow token so tool lookups do not hit the API limit), after compiling the engine
+`ok` and exit code 0 mean full coverage. CI (`.github/workflows/ci.yaml`) runs the same command on every push through the gg GitHub Action (`eirikb/gg/action@main`, which passes the workflow token so tool lookups do not hit the API limit), after compiling the engine
 with `-Xlint:all -Werror` and running the starter program headless; the solutions are not in the repository, so CI cannot run them. New engine behaviour: write the `req` first, then the code with its tag. Same tool and style as in SOFEN.
 
 ## Prose checks
@@ -62,7 +62,7 @@ with `-Xlint:all -Werror` and running the starter program headless; the solution
 The `prose` job of CI runs four checks on every push, set up after
 [koppor-skills/prose-checks-ci](https://github.com/koppor/koppor-skills/blob/main/skills/documents/prose-checks-ci/SKILL.md):
 
-- [markdownlint](https://github.com/DavidAnson/markdownlint): Markdown structure (`.markdownlint.yml`: one sentence per line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML; tables aligned: pad the cells so the pipes line up; a Markdown table formatter in the editor does it).
+- [markdownlint](https://github.com/DavidAnson/markdownlint): Markdown structure (`.markdownlint.yaml`: one sentence per line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML; tables aligned: pad the cells so the pipes line up; a Markdown table formatter in the editor does it).
 - [typos](https://github.com/crate-ci/typos): misspellings in prose, comments and identifiers (`.typos.toml`: `gg.cmd` and the templates excluded).
 - [Vale](https://vale.sh) with the Microsoft and write-good packages (`.vale.ini`; project words in `.vale/styles/config/vocabularies/Karel/accept.txt`) on the prose files, not on `docs/requirements.md`: errors fail the job, warnings appear as annotations, on pull requests as review comments.
 - [textlint](https://textlint.org) with `terminology` and `write-good` (`.textlintrc.json`): consistent terms ("repository", "Visual Studio Code"), wordiness.
