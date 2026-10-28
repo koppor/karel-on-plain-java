@@ -4,6 +4,7 @@ import static karel.Karel.*;
 // New task: copy this file (Ctrl+C, Ctrl+V on src), give it the name of the task, change the world
 // Commands:   moveForward(); turnLeft(); turnRight(); turnAround(); pickBeeper(); dropBeeper();
 // Conditions: onBeeper() beeperAhead() frontIsClear() leftIsClear() rightIsClear()
+// Sonar (numbers): distanceToWall() distanceToBeeper()
 // Worlds: type World. and press Ctrl+Space
 void main() {
     openWorld(World.DEFUSE_ONE_BOMB);

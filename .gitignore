@@ -6,3 +6,8 @@ solutions/
 out/
 # local test copies of the extracted ZIP
 KarelExercise01/
+# IntelliJ project files of this folder (the ZIP template is in intellij/)
+/.idea/
+/*.iml
+# internal plans stay local
+/PLAN.md
