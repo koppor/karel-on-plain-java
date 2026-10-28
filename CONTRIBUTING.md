@@ -9,9 +9,9 @@ every release is in `CHANGELOG.md`. Rules for agent sessions: `AGENTS.md`.
 |---|---|---|
 | `src/karel/Karel.java` | the engine, one file: worlds (text maps and generators), task texts (in `WorldMaps`), commands, conditions, sonar, window, goal check, headless mode, snapshots; version in the header | yes (in the ZIP) |
 | `src/FirstKarelProgram.java` | the starter file: three commands in `DEFUSE_ONE_BOMB`, the lists of commands, conditions and sonar as comments; students copy it per task | yes (in the ZIP) |
-| `KarelExercise01v2.zip`, `KarelExercise02-Karel-v1.3.1.zip` | complete IntelliJ project per exercise (`.idea/`, `KarelExerciseNN.iml`, `src/`), no top-level folder. 01 = Karel 1.1.0 as handed out 2026-10-21/23 (renamed `v2` when a second version was handed out); 02 = Karel 1.2.0, contains all worlds | yes |
-| `intellij/` | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration, `.iml` with source folder `src`; the name `KarelExercise01` in it is a placeholder | – |
-| `make_zip.ps1` | `make_zip.ps1 -Exercise NN` builds `KarelExerciseNN.zip` from `intellij/` + `src/`; run after every change of `src/` | – |
+| `Karel-v1.3.1.zip` | complete IntelliJ project per exercise (`.idea/`, `KarelExerciseNN.iml`, `src/`), no top-level folder. 01 = Karel 1.1.0 as handed out 2026-10-21/23 (renamed `v2` when a second version was handed out); 02 = Karel 1.2.0, contains all worlds | yes |
+| `intellij/` | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration, `.iml` with source folder `src`; the name `KarelExercise01` in the template files is a placeholder replaced by the ZIP name | – |
+| `make_zip.ps1` | builds `Karel-v<version>.zip` from `intellij/` + `src/`; run after every change of `src/` | – |
 | `solutions/` | the private repository `karel-on-plain-java-solutions`, cloned into this folder (git-ignored here): one self-contained sample solution per world, same shape as a student file | never public; handed out after the exercise |
 | `docs/requirements.md` | requirements in OpenFastTrace format, see Tracing | – |
 
@@ -22,7 +22,7 @@ every release is in `CHANGELOG.md`. Rules for agent sessions: `AGENTS.md`.
   prints the task text, the result and the final map. Run all solutions, random worlds with several seeds, before every release.
 - Version: `Karel.VERSION` and `Karel.RELEASE_DATE` plus the header comment, shown in the window title. Semantic versioning: major = commands
   change incompatibly, minor = new worlds or features, patch = fixes. A version that was handed out is never changed; the next change bumps it.
-- Release: bump version, `CHANGELOG.md` (Keep a Changelog), `make_zip.ps1 -Exercise NN` (ZIP name = `KarelExerciseNN-Karel-v<version>.zip`, the extracted folder has that name), publish the ZIP as a GitHub release asset (and on the course platform); the release notes are the CHANGELOG excerpt for that version in Keep-a-Changelog format (`### Added` / `### Changed` / `### Fixed`), not a one-line summary; solutions are handed out only after the exercise.
+- Release: bump version, `CHANGELOG.md` (Keep a Changelog), `make_zip.ps1` (ZIP name = `Karel-v<version>.zip`, the extracted folder has that name), publish the ZIP as a GitHub release asset (and on the course platform); the release notes are the CHANGELOG excerpt for that version in Keep-a-Changelog format (`### Added` / `### Changed` / `### Fixed`), not a one-line summary; solutions are handed out only after the exercise.
 
 ## Worlds
 
