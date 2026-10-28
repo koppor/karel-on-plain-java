@@ -9,10 +9,10 @@ the idea goes back to Richard Pattis (1981). For teachers and contributors: `CON
 
 ## Getting started
 
-1. Download the exercise project `KarelExercise02-Karel-v1.3.1.zip` from the [releases](https://github.com/koppor/karel-on-plain-java/releases) (or from wherever your course hands it out); it contains the engine, all worlds and a first program.
+1. Download the exercise project `Karel-v1.3.1.zip` from the [releases](https://github.com/koppor/karel-on-plain-java/releases) (or from wherever your course hands it out); it contains the engine, all worlds and a first program.
 2. Unpack it. Windows: click the ZIP once, then **Extract all** in the Explorer toolbar (or right-click, Extract all). macOS: the browser
-   unpacks it after the download; the folder `KarelExercise02-Karel-v1.3.1` is in Downloads.
-3. IntelliJ: Main Menu (four lines), **File, Open**, select the extracted **folder** `KarelExercise02-Karel-v1.3.1` (not a file inside it). Trust Project with the
+   unpacks it after the download; the folder `Karel-v1.3.1` is in Downloads.
+3. IntelliJ: Main Menu (four lines), **File, Open**, select the extracted **folder** `Karel-v1.3.1` (not a file inside it). Trust Project with the
    Defender option unticked. If IntelliJ asks for a JDK: Setup SDK, choose JDK 26 (Download JDK if the list is empty).
 4. Open `src/FirstKarelProgram.java` and run it with the green arrow next to `void main()`. The Karel window opens.
 5. One file per task: click `FirstKarelProgram.java`, Ctrl+C, click `src`, Ctrl+V, name it after the world (e.g. `CarryTheHarvest.java`),
