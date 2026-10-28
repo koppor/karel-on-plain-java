@@ -7,6 +7,34 @@ ordinary Java programs written as compact source files (Java 25: `void main()`, 
 Plain Java 25 with Swing, no libraries. Commands and conditions follow [Karel by Fred Overflow](https://github.com/fredoverflow/karel),
 the idea goes back to Richard Pattis (1981). For teachers and contributors: `CONTRIBUTING.md`; history: `CHANGELOG.md`.
 
+<img src="docs/img/window-climbTheStairs.png" alt="The Karel window after a run of CLIMB_THE_STAIRS: the world, the task text, step and speed slider, Goal reached in 25 steps" width="420" align="right">
+
+The program that produced the window on the right, a complete Java file:
+
+```java
+import static karel.Karel.*;
+
+void main() {
+    openWorld(World.CLIMB_THE_STAIRS);
+    moveForward();
+    for (int i = 0; i < 6; i++) {
+        climbOneStair();
+    }
+}
+
+void climbOneStair() {
+    turnLeft();
+    moveForward();
+    turnRight();
+    moveForward();
+}
+```
+
+Every command is one visible step. The task text sits under the world, the step slider lets you go back to any step after the run,
+and the status line tells whether the goal was reached.
+
+<br clear="all">
+
 ## Getting started
 
 1. Download the exercise project `Karel-v1.3.1.zip` from the [releases](https://github.com/koppor/karel-on-plain-java/releases) (or from wherever your course hands it out); it contains the engine, all worlds and a first program.
@@ -43,6 +71,11 @@ Errors stop the program with a message in the Run window, e.g. "Karel cannot mov
 - **Replay** plays the run again; **Close** ends the program.
 
 ## Worlds and tasks
+
+<img src="docs/img/climbTheStairs-goal.png" alt="CLIMB_THE_STAIRS at the start with the goal drawn as an orange outline: Karel on the top step" width="300" align="right">
+
+Every world has a start and a goal. **Show goal** draws the goal as an orange outline into the current world, here for `CLIMB_THE_STAIRS`:
+Karel has to end on the top step, facing east.
 
 Tasks keep their numbers across the course (basics: 1 to 6; methods with parameters and return values: 10 to 12; advanced: 13 to 16). Worlds marked "random" are different on
 every run; your program must work for all of them.
