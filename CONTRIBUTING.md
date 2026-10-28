@@ -22,7 +22,7 @@ every release is in `CHANGELOG.md`. Rules for agent sessions: `AGENTS.md`.
   prints the task text, the result and the final map. Run all solutions, random worlds with several seeds, before every release.
 - Version: `Karel.VERSION` and `Karel.RELEASE_DATE` plus the header comment, shown in the window title. Semantic versioning: major = commands
   change incompatibly, minor = new worlds or features, patch = fixes. A version that was handed out is never changed; the next change bumps it.
-- Release: bump version, `CHANGELOG.md` (Keep a Changelog), `make_zip.ps1 -Exercise NN` (ZIP name = `KarelExerciseNN-Karel-v<version>.zip`, the extracted folder has that name), publish the ZIP as a GitHub release asset (and on the course platform); solutions are handed out only after the exercise.
+- Release: bump version, `CHANGELOG.md` (Keep a Changelog), `make_zip.ps1 -Exercise NN` (ZIP name = `KarelExerciseNN-Karel-v<version>.zip`, the extracted folder has that name), publish the ZIP as a GitHub release asset (and on the course platform); the release notes are the CHANGELOG excerpt for that version in Keep-a-Changelog format (`### Added` / `### Changed` / `### Fixed`), not a one-line summary; solutions are handed out only after the exercise.
 
 ## Worlds
 

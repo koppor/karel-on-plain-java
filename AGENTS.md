@@ -14,3 +14,4 @@ Rules for agent sessions in this folder. Everything technical is in `CONTRIBUTIN
 - Doc comments are Markdown doc comments: `///` lines (JEP 467, Java 23+), never `/** ... */`; code in backticks, examples as fenced ```java blocks. Applies to the engine and to the sample solutions (pre- and postconditions as `/// Precondition:` / `/// Postcondition:`).
 - String case conversion and formatting always with `Locale.ROOT`; test headless with `-Duser.language=tr -Duser.country=TR` as well.
 - Changes reach `main` only through a pull request that OK reviews; never push to `main` directly. One squashed commit per release.
+- Release notes on GitHub are the CHANGELOG section of that version, verbatim (Keep a Changelog headings), e.g. `awk '/^## \[1.3.1\]/{f=1} /^## \[1.3.0\]/{f=0} f' CHANGELOG.md`.
