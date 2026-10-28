@@ -55,7 +55,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 /// }
 /// ```
 ///
-/// Commands and conditions follow Karel by Fred Overflow (github.com/fredoverflow/karel). Worlds are
+/// Commands and conditions follow Karel by Fred Overflow (https://github.com/fredoverflow/karel); eleven worlds are modelled on
+/// his problems, each with a permalink to its source in `Problem.kt` at the world. Karel the Robot was invented by Richard Pattis
+/// (Stanford, 1981); Fred Overflow has no affiliation with this project. His conditions for reuse
+/// (https://github.com/fredoverflow/karel/issues/4#issuecomment-1110291077): keep his software free, credit Pattis as the inventor,
+/// do not publish solutions to the majority of the puzzles. Worlds are
 /// text maps: `.` empty, `*` one beeper, `2`–`9` that many beepers, `#` wall
 /// block, `> ^ < v` Karel facing east/north/west/south, `E N W S` Karel on a beeper. An optional
 /// last line `karel on n` puts n beepers under Karel (n > 1).
@@ -96,6 +100,7 @@ public final class Karel {
 
     static {
         // name, start map, goal map
+        // after Fred Overflow's obtainArtifact: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L106
         world("obtainArtifact", "The artifact lies behind the pillar. Fetch it and bring it back to where Karel started.", """
                 ..........
                 ..........
@@ -119,6 +124,7 @@ public final class Karel {
                 ....E.....
                 ..........
                 """);
+        // after Fred Overflow's defuseOneBomb: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L123
         world("defuseOneBomb", "A bomb lies at the other wall. Pick it up and carry it back to the start.", """
                 ..........
                 ..........
@@ -142,6 +148,7 @@ public final class Karel {
                 ..........
                 >.........
                 """);
+        // after Fred Overflow's climbTheStairs: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L178
         world("climbTheStairs", "Climb the stairs to the top. Karel ends on the top step, facing east.", """
                 ..........
                 ..........
@@ -165,6 +172,7 @@ public final class Karel {
                 ...#####..
                 ..######..
                 """);
+        // after Fred Overflow's fillTheHoles: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L194
         world("fillTheHoles", "Drop one beeper into each of the four holes, then walk on.", """
                 ..........
                 ..........
@@ -188,6 +196,7 @@ public final class Karel {
                 .........>
                 ##*#*#*#*#
                 """);
+        // after Fred Overflow's mowTheLawn: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L227
         world("mowTheLawn", "Pick up all 36 beepers, row by row, like mowing a lawn.", """
                 ..........
                 ..........
@@ -211,6 +220,7 @@ public final class Karel {
                 ..........
                 ..........
                 """);
+        // after Fred Overflow's defuseTwoBombs: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L140
         world("defuseTwoBombs", "Two bombs, one at each wall. Defuse both: call defuseOneBomb twice.", """
                 *.........
                 ..........
@@ -234,6 +244,7 @@ public final class Karel {
                 ..........
                 ^.........
                 """);
+        // after Fred Overflow's practiceHomeRun: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L158
         world("practiceHomeRun", "Pick up the beepers in all four corners and return home.", """
                 *........*
                 ..........
@@ -257,6 +268,7 @@ public final class Karel {
                 ..........
                 >.........
                 """);
+        // after Fred Overflow's saveTheFlower: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L210
         world("saveTheFlower", "Carry the flower to the top of the mountain and climb down on the other side.", """
                 ..........
                 ..........
@@ -280,6 +292,7 @@ public final class Karel {
                 ..#######.
                 ..#######>
                 """);
+        // after Fred Overflow's stealOlympicFire: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L324
         world("stealOlympicFire", "Climb the stairs, take the fire, and jump down on the far side.", """
                 ..........
                 ..........
@@ -334,6 +347,7 @@ public final class Karel {
             : new Random(Long.getLong("karel.seed"));
 
     /// Ten lampions on the floor, ceiling hanging down to a random depth in each column.
+    /// After Fred Overflow's hangTheLampions: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L372
     private static WorldMaps lampions() {
         char[][] start = grid(10, 10, '.');
         char[][] goal = grid(10, 10, '.');
@@ -352,6 +366,7 @@ public final class Karel {
     }
 
     /// One winding corridor without crossings or dead ends, beeper at its end.
+    /// After Fred Overflow's walkTheLabyrinth: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L358
     private static WorldMaps labyrinth() {
         List<int[]> path = new ArrayList<>();
         while (path.size() < 30) {

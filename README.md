@@ -140,5 +140,9 @@ without a goal check. Share a world with others by sharing the two text blocks.
 
 ## Credits
 
-Richard E. Pattis: Karel the Robot (1981). Fred Overflow: Karel the Robot, GitHub. Task ideas after the SE1 exercise sheets of Universität Hamburg. Built for Programmieren 1 at Technische Hochschule Ulm.
+Karel the Robot was invented by Richard E. Pattis (Stanford University, 1981). Commands, conditions and eleven of the worlds follow
+[Karel by Fred Overflow](https://github.com/fredoverflow/karel), which is free software; every such world links to its source line in his
+[`Problem.kt`](https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt) in the
+engine. Fred Overflow has no affiliation with this project; following his
+[conditions](https://github.com/fredoverflow/karel/issues/4#issuecomment-1110291077), sample solutions are not published.
 Licence: MIT (`LICENSE`).
