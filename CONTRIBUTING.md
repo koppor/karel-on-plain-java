@@ -59,7 +59,7 @@ with `-Xlint:all -Werror` and running the starter program headless; the solution
 
 ## Style
 
-- Java: Netflix jfmt (Oracle conventions, 4 spaces), `{` on the same line, braces also around one-line bodies. Identifiers and comments in English.
+- Java: [Netflix jfmt](https://github.com/Netflix/jfmt) (Oracle conventions, 4 spaces), `{` on the same line, braces also around one-line bodies. Identifiers and comments in English. The engine is formatted by the tool: `./jfmt.sh` formats `src/karel/Karel.java`, `./jfmt.sh --check` is what CI runs (jar from Maven Central, version and checksum pinned in the script). The starter and the sample solutions follow the same conventions by hand: jfmt would expand `import static karel.Karel.*;` into single imports, and that line is part of what students learn.
 - Doc comments as `///` Markdown doc comments (JEP 467), not `/** ... */`: backticks for code, fenced ```java blocks for examples. IntelliJ renders them in the quick documentation popup.
 - Solutions follow the course rules: store a result in a variable, then use it (no nested calls); one method per idea; names are verbs.
 - Locale: never call `toLowerCase()`/`toUpperCase()`/`String.format` without a locale; use `Locale.ROOT` (a Turkish student machine turned `FILL_THE_HOLES` into `fıll_the_holes`, 1.3.1). CI runs the starter with `-Duser.language=tr -Duser.country=TR`.

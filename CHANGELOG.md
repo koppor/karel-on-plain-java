@@ -5,6 +5,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+### Changed
+
+- Engine formatted with Netflix jfmt 0.9.0; `./jfmt.sh --check` runs in CI.
+
 ## [1.3.1] – 2026-10-28
 
 Initial public release.

@@ -20,6 +20,8 @@ jobs:
         run: |
           mkdir -p out
           javac -Xlint:all -Werror -d out src/karel/Karel.java
+      - name: Formatting of the engine (Netflix jfmt)
+        run: ./jfmt.sh --check
       - name: Run starter program headless
         run: java -Dkarel.headless=true -cp out src/FirstKarelProgram.java
       - name: Run starter program headless under a Turkish locale (dotless i)
