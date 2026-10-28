@@ -9,7 +9,7 @@ every release is in `CHANGELOG.md`. Rules for agent sessions: `AGENTS.md`.
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
 | `src/karel/Karel.java`       | the engine, one file: worlds (text maps and generators), task texts (in `WorldMaps`), commands, conditions, sonar, window, goal check, headless mode, snapshots; version in the header                                            | yes (in the ZIP)                            |
 | `src/FirstKarelProgram.java` | the starter file: three commands in `DEFUSE_ONE_BOMB`, the lists of commands, conditions and sonar as comments; students copy it per task                                                                                         | yes (in the ZIP)                            |
-| `Karel-v1.3.1.zip`           | the complete IntelliJ project students open (`.idea/`, `Karel.iml`, `src/`), no top-level folder; the extracted folder is named like the ZIP                                                                                      | yes                                         |
+| `Karel-v1.3.1.zip`           | the complete IntelliJ project students open (`.idea/`, `Karel.iml`, `src/`), no top-level folder; the extracted folder has the ZIP's name                                                                                         | yes                                         |
 | `intellij/`                  | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration, `.iml` with source folder `src`; the name `KarelExercise01` in the template files is a placeholder replaced by the ZIP name | –                                           |
 | `make_zip.ps1`               | builds `Karel-v<version>.zip` from `intellij/` + `src/`; run after every change of `src/`                                                                                                                                         | –                                           |
 | `solutions/`                 | the private repository `karel-on-plain-java-solutions`, cloned into this folder (git-ignored here): one self-contained sample solution per world, same shape as a student file                                                    | never public; handed out after the exercise |
@@ -19,23 +19,23 @@ every release is in `CHANGELOG.md`. Rules for agent sessions: `AGENTS.md`.
 
 - Compile: `javac -Xlint:all -d <classes> src/karel/Karel.java` (JDK 25 or newer; compact source files need 25).
 - Test a solution without window and delay: `java -Dkarel.headless=true [-Dkarel.seed=<n>] -cp <classes> solutions/<World>.java`
-  prints the task text, the result and the final map. Run all solutions, random worlds with several seeds, before every release.
+  prints the task text, the result and the final map. Run all solutions, random worlds with at least three seeds, before every release.
 - Version: `Karel.VERSION` and `Karel.RELEASE_DATE` plus the header comment, shown in the window title. Semantic versioning: major = commands
-  change incompatibly, minor = new worlds or features, patch = fixes. A version that was handed out is never changed; the next change bumps it.
-- Release: bump version, `CHANGELOG.md` (Keep a Changelog), `make_zip.ps1` (ZIP name = `Karel-v<version>.zip`, the extracted folder has that name), publish the ZIP as a GitHub release asset (and on the course platform); the release notes are the CHANGELOG excerpt for that version in Keep-a-Changelog format (`### Added` / `### Changed` / `### Fixed`), not a one-line summary; solutions are handed out only after the exercise.
+  change incompatibly, minor = new worlds or features, patch = fixes. A version that students have never changes; the next change bumps it.
+- Release: bump version, `CHANGELOG.md` (Keep a Changelog), `make_zip.ps1` (ZIP name = `Karel-v<version>.zip`, the extracted folder has that name), publish the ZIP as a GitHub release asset (and on the course platform); the release notes are the CHANGELOG excerpt for that version in Keep-a-Changelog format (`### Added` / `### Changed` / `### Fixed`), not a one-line summary; students get the solutions only after the exercise.
 
 ## Worlds
 
 - Text map: `.` empty, `*` one beeper, `2`–`9` that many beepers, `#` wall block, `> ^ < v` Karel facing east/north/west/south,
   `E N W S` Karel on a beeper; optional last line `karel on n` = n beepers under Karel. The run history and the goal check use the same text
   format, so every state must be expressible in it: at most 9 beepers on a cell other than Karel's.
-- Data: `record WorldMaps(String text, String start, String goal)` (task text, start, goal); `WORLDS` maps a camelCase name to a `Supplier<WorldMaps>` (supplier, because random worlds are generated per run). Students' own worlds go through `openWorld(start, goal)` and never touch the registry.
-- A world taken from Fred Overflow's set gets a permalink to its definition in his `Problem.kt` (link to a commit, not to `master`) as a comment above `world(...)` or in the generator's doc comment; our own worlds say nothing. His reuse conditions (issue 4 of his repository) are quoted in the class comment.
+- Data: `record WorldMaps(String text, String start, String goal)` (task text, start, goal); `WORLDS` maps a camelCase name to a `Supplier<WorldMaps>` (supplier, because a random world generates itself anew on every run). Students' own worlds go through `openWorld(start, goal)` and never touch the registry.
+- A world taken from Fred Overflow's set gets a permalink to its definition in his `Problem.kt` (link to a commit, not to `master`) as a comment above `world(...)` or in the generator's doc comment; the project's own worlds carry no link. The class comment quotes his reuse conditions (issue 4 of his repository).
 - Fixed world: `world(name, start, goal)` in the static block. Random world: a generator method like `lampions()` registered with
   `WORLDS.put`; use `RANDOM` (seeded by `-Dkarel.seed`). Add the enum constant in `World`, the task text as first argument of `world(...)` or of the generator's `WorldMaps`, a solution in
   `solutions/`, a `req` if the engine gains behaviour, and the task to `README.md` with its number.
 - Task numbers: one block of ten per part, numbers already handed out never change. Exercise 01 = 1 to 6 (extras unnumbered), methods 10 to 12,
-  advanced 13 to 16, the 20s are reserved for Karel 2.0.
+  advanced 13 to 16, the 20s wait for Karel 2.0.
 - Task text: one or two sentences, imperative, "changes on every run" for random worlds; the slides use the same wording.
 
 ## Images for slides
@@ -46,7 +46,7 @@ screenshots come from `deckbuild\karel-tools\WindowShot.java` (needs a display).
 
 ## Tracing (OpenFastTrace)
 
-`docs/requirements.md` lists features (`feat~…~1`) and requirements (`req~…~1`); every `req` is covered by a `// [impl->req~…~1]` comment at the
+`docs/requirements.md` lists features (`feat~…~1`) and requirements (`req~…~1`); a `// [impl->req~…~1]` comment covers every `req` at the
 code that implements it. Check with [OpenFastTrace](https://github.com/itsallcode/openfasttrace), run through
 [gg.cmd](https://github.com/eirikb/gg) in the repository root (downloads the tool, works on Windows, macOS and Linux, nothing to install):
 

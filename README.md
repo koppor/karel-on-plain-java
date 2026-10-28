@@ -31,7 +31,7 @@ void climbOneStair() {
 ```
 
 Every command is one visible step. The task text sits under the world, the step slider lets you go back to any step after the run,
-and the status line tells whether the goal was reached.
+and the status line tells whether Karel reached the goal.
 
 <br clear="all">
 
@@ -47,18 +47,18 @@ and the status line tells whether the goal was reached.
    change the world in `openWorld(...)`.
 
 Every task is in its own world, every world is one line: `openWorld(World.CARRY_THE_HARVEST);`. Type `World.` and press Ctrl+Space to see them all.
-The task text is shown under the world and in the Run window.
+The window shows the task text under the world, and the Run window prints it.
 
 ## Commands, conditions, sonar
 
-| Commands (Karel does something)                                   | Conditions (true or false)                               | Sonar (a number)                                                       |
-| ----------------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `moveForward();` one cell forward                                 | `frontIsClear()` no wall in front                        | `distanceToWall()` moves possible before the wall, 0 if it is in front |
-| `turnLeft();` 90° counterclockwise                                | `leftIsClear()` no wall to the left                      | `distanceToBeeper()` moves to the next beeper ahead, −1 if none        |
-| `turnRight();` 90° clockwise                                      | `rightIsClear()` no wall to the right                    |                                                                        |
-| `turnAround();` 180°                                              | `onBeeper()` at least one beeper on this cell            |                                                                        |
-| `pickBeeper();` take one beeper from this cell                    | `beeperAhead()` at least one beeper on the cell in front |                                                                        |
-| `dropBeeper();` put one beeper on this cell (any number per cell) |                                                          |                                                                        |
+| Commands (Karel does something)                                   | Conditions (true or false)                               | Sonar (a number)                                                            |
+| ----------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `moveForward();` one cell forward                                 | `frontIsClear()` no wall in front                        | `distanceToWall()` moves possible before the wall, 0 with the wall in front |
+| `turnLeft();` 90° counterclockwise                                | `leftIsClear()` no wall to the left                      | `distanceToBeeper()` moves to the next beeper ahead, −1 if none             |
+| `turnRight();` 90° clockwise                                      | `rightIsClear()` no wall to the right                    |                                                                             |
+| `turnAround();` 180°                                              | `onBeeper()` at least one beeper on this cell            |                                                                             |
+| `pickBeeper();` take one beeper from this cell                    | `beeperAhead()` at least one beeper on the cell in front |                                                                             |
+| `dropBeeper();` put one beeper on this cell (any number per cell) |                                                          |                                                                             |
 
 Errors stop the program with a message in the Run window, for example "Karel cannot move forward: wall ahead"; click the link to jump to the line.
 
@@ -133,14 +133,14 @@ without a goal check. Share a world with others by sharing the two text blocks.
 | `package karel does not exist`                                | the wrong folder is open: File, Open, select the extracted folder itself                                                                                                            |
 | `Project JDK is not defined`                                  | click Setup SDK, choose JDK 26                                                                                                                                                      |
 | `cannot find symbol: openWorld`                               | first line missing: `import static karel.Karel.*;`                                                                                                                                  |
-| `cannot find symbol: moveForward` after writing an own method | your method is named like a Karel command (for example `moveForward(int steps)`); rename it, for example `move`                                                                     |
+| `cannot find symbol: moveForward` after writing an own method | your method has the name of a Karel command (for example `moveForward(int steps)`); rename it, for example `move`                                                                   |
 | another program runs                                          | use the green arrow next to `void main()` in the open file                                                                                                                          |
 | the program does not end                                      | click Close in the Karel window                                                                                                                                                     |
 | Ctrl+Alt+L indents methods by 8 extra spaces                  | IntelliJ bug [IDEA-382349](https://youtrack.jetbrains.com/issue/IDEA-382349) with compact source files: Settings, Editor, Code Style, Java, Tabs and Indents, Continuation indent 0 |
 
 ## Credits
 
-Karel the Robot was invented by Richard E. Pattis (Stanford University, 1981). Commands, conditions and eleven of the worlds follow
+Richard E. Pattis invented Karel the Robot (Stanford University, 1981). Commands, conditions and eleven of the worlds follow
 [Karel by Fred Overflow](https://github.com/fredoverflow/karel), which is free software; every such world links to its source line in his
 [`Problem.kt`](https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt) in the
 engine. Fred Overflow has no affiliation with this project; following his
