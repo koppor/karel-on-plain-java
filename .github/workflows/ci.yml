@@ -6,6 +6,8 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write   # Vale review comments on pull requests
+  checks: write          # Vale check annotations on pushes
 
 jobs:
   build:
@@ -38,3 +40,17 @@ jobs:
           globs: '**/*.md'
       - name: typos
         uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b # v1.51.1
+      - name: Vale (Microsoft and write-good styles)
+        uses: vale-cli/vale-action@518a9136acc6e6668ce7c00d367051e0941e87ff # v3.0.0
+        with:
+          files: all
+          reporter: ${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
+          filter_mode: nofilter
+          fail_on_error: true
+      - name: textlint (terminology, write-good)
+        run: npx --yes --package textlint --package textlint-filter-rule-allowlist --package textlint-rule-terminology --package textlint-rule-write-good textlint --format github README.md CONTRIBUTING.md CHANGELOG.md
+      - name: heylogs (CHANGELOG follows Keep a Changelog)
+        uses: jbangdev/jbang-action@03f9f9f6881262b315ec6b6c7d02d8af52ac889a # v0.142.0
+        with:
+          script: com.github.nbbrd.heylogs:heylogs-cli:0.19.1:bin
+          scriptargs: check CHANGELOG.md

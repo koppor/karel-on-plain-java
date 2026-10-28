@@ -48,27 +48,37 @@ screenshots come from `deckbuild\karel-tools\WindowShot.java` (needs a display).
 
 `docs/requirements.md` lists features (`feat~…~1`) and requirements (`req~…~1`); every `req` is covered by a `// [impl->req~…~1]` comment at the
 code that implements it. Check with [OpenFastTrace](https://github.com/itsallcode/openfasttrace), run through
-[gg.cmd](https://github.com/eirikb/gg) in the repo root (downloads the tool, works on Windows, macOS and Linux, nothing to install):
+[gg.cmd](https://github.com/eirikb/gg) in the repository root (downloads the tool, works on Windows, macOS and Linux, nothing to install):
 
 ```sh
 ./gg.cmd gh/itsallcode/openfasttrace trace docs src      (Windows: gg.cmd gh/itsallcode/openfasttrace trace docs src)
 ```
 
-"ok" and exit code 0 mean full coverage. CI (`.github/workflows/ci.yml`) runs the same command on every push through the gg GitHub Action (`eirikb/gg/action@main`, which passes the workflow token so tool lookups do not hit the API limit), after compiling the engine
+`ok` and exit code 0 mean full coverage. CI (`.github/workflows/ci.yml`) runs the same command on every push through the gg GitHub Action (`eirikb/gg/action@main`, which passes the workflow token so tool lookups do not hit the API limit), after compiling the engine
 with `-Xlint:all -Werror` and running the starter program headless; the solutions are not in the repository, so CI cannot run them. New engine behaviour: write the `req` first, then the code with its tag. Same tool and style as in SOFEN.
 
 ## Prose checks
 
-CI lints every Markdown file with [markdownlint](https://github.com/DavidAnson/markdownlint) (`.markdownlint.yml`: one sentence per
-line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML) and runs [typos](https://github.com/crate-ci/typos) over the whole
-repository (`.typos.toml`: `gg.cmd` and the templates excluded, Karel vocabulary accepted). Locally:
+The `prose` job of CI runs four checks on every push, set up after
+[koppor-skills/prose-checks-ci](https://github.com/koppor/koppor-skills/blob/main/skills/documents/prose-checks-ci/SKILL.md):
+
+- [markdownlint](https://github.com/DavidAnson/markdownlint): Markdown structure (`.markdownlint.yml`: one sentence per line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML; compact tables).
+- [typos](https://github.com/crate-ci/typos): misspellings in prose, comments and identifiers (`.typos.toml`: `gg.cmd` and the templates excluded).
+- [Vale](https://vale.sh) with the Microsoft and write-good packages (`.vale.ini`; project words in `.vale/styles/config/vocabularies/Karel/accept.txt`): errors fail the job, warnings appear as annotations, on pull requests as review comments.
+- [textlint](https://textlint.org) with `terminology` and `write-good` (`.textlintrc.json`): consistent terms ("repository", "Visual Studio Code"), wordiness.
+- [heylogs](https://github.com/nbbrd/heylogs) checks that `CHANGELOG.md` follows Keep a Changelog (run through JBang).
+
+Locally:
 
 ```sh
 npx --yes markdownlint-cli2 "**/*.md"
 ./gg.cmd gh/crate-ci/typos --format brief .
+./gg.cmd gh/errata-ai/vale sync && ./gg.cmd gh/errata-ai/vale README.md CONTRIBUTING.md CHANGELOG.md
+npx --yes --package textlint --package textlint-filter-rule-allowlist --package textlint-rule-terminology --package textlint-rule-write-good textlint README.md CONTRIBUTING.md CHANGELOG.md
+./gg.cmd jbang com.github.nbbrd.heylogs:heylogs-cli:0.19.1:bin check CHANGELOG.md
 ```
 
-VS Code users get both as recommended extensions (`.vscode/extensions.json`).
+Visual Studio Code users get both as recommended extensions (`.vscode/extensions.json`).
 
 ## Style
 

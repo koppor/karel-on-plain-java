@@ -1,0 +1,16 @@
+{
+  "filters": {
+    "allowlist": {
+      "allow": ["/`[^`]*`/", "Karel", "beeper", "beepers", "OpenFastTrace", "/gg\.cmd/"]
+    }
+  },
+  "rules": {
+    "terminology": true,
+    "write-good": {
+      "passive": false,
+      "eprime": false,
+      "weasel": false,
+      "adverb": false
+    }
+  }
+}

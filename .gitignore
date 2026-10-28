@@ -11,3 +11,6 @@ KarelExercise01/
 /*.iml
 # internal plans stay local
 /PLAN.md
+# Vale packages are synced by `vale sync`; only our vocabulary is versioned
+/.vale/styles/*
+!/.vale/styles/config/
