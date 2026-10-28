@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Karel are documented in this file.
+This file documents all notable changes to Karel.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]

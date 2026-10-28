@@ -5,37 +5,37 @@ every release is in `CHANGELOG.md`. Rules for agent sessions: `AGENTS.md`.
 
 ## Files
 
-| Path | Content | handed out |
-|---|---|---|
-| `src/karel/Karel.java` | the engine, one file: worlds (text maps and generators), task texts (in `WorldMaps`), commands, conditions, sonar, window, goal check, headless mode, snapshots; version in the header | yes (in the ZIP) |
-| `src/FirstKarelProgram.java` | the starter file: three commands in `DEFUSE_ONE_BOMB`, the lists of commands, conditions and sonar as comments; students copy it per task | yes (in the ZIP) |
-| `Karel-v1.3.1.zip` | complete IntelliJ project per exercise (`.idea/`, `KarelExerciseNN.iml`, `src/`), no top-level folder. 01 = Karel 1.1.0 as handed out 2026-10-21/23 (renamed `v2` when a second version was handed out); 02 = Karel 1.2.0, contains all worlds | yes |
-| `intellij/` | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration, `.iml` with source folder `src`; the name `KarelExercise01` in the template files is a placeholder replaced by the ZIP name | – |
-| `make_zip.ps1` | builds `Karel-v<version>.zip` from `intellij/` + `src/`; run after every change of `src/` | – |
-| `solutions/` | the private repository `karel-on-plain-java-solutions`, cloned into this folder (git-ignored here): one self-contained sample solution per world, same shape as a student file | never public; handed out after the exercise |
-| `docs/requirements.md` | requirements in OpenFastTrace format, see Tracing | – |
+| Path                         | Content                                                                                                                                                                                                                           | handed out                                  |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `src/karel/Karel.java`       | the engine, one file: worlds (text maps and generators), task texts (in `WorldMaps`), commands, conditions, sonar, window, goal check, headless mode, snapshots; version in the header                                            | yes (in the ZIP)                            |
+| `src/FirstKarelProgram.java` | the starter file: three commands in `DEFUSE_ONE_BOMB`, the lists of commands, conditions and sonar as comments; students copy it per task                                                                                         | yes (in the ZIP)                            |
+| `Karel-v1.3.1.zip`           | the complete IntelliJ project students open (`.idea/`, `Karel.iml`, `src/`), no top-level folder; the extracted folder has the ZIP's name                                                                                         | yes                                         |
+| `intellij/`                  | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration, `.iml` with source folder `src`; the name `KarelExercise01` in the template files is a placeholder replaced by the ZIP name | –                                           |
+| `make_zip.ps1`               | builds `Karel-v<version>.zip` from `intellij/` + `src/`; run after every change of `src/`                                                                                                                                         | –                                           |
+| `solutions/`                 | the private repository `karel-on-plain-java-solutions`, cloned into this folder (git-ignored here): one self-contained sample solution per world, same shape as a student file                                                    | never public; handed out after the exercise |
+| `docs/requirements.md`       | requirements in OpenFastTrace format, see Tracing                                                                                                                                                                                 | –                                           |
 
 ## Build, test, release
 
 - Compile: `javac -Xlint:all -d <classes> src/karel/Karel.java` (JDK 25 or newer; compact source files need 25).
 - Test a solution without window and delay: `java -Dkarel.headless=true [-Dkarel.seed=<n>] -cp <classes> solutions/<World>.java`
-  prints the task text, the result and the final map. Run all solutions, random worlds with several seeds, before every release.
+  prints the task text, the result and the final map. Run all solutions, random worlds with at least three seeds, before every release.
 - Version: `Karel.VERSION` and `Karel.RELEASE_DATE` plus the header comment, shown in the window title. Semantic versioning: major = commands
-  change incompatibly, minor = new worlds or features, patch = fixes. A version that was handed out is never changed; the next change bumps it.
-- Release: bump version, `CHANGELOG.md` (Keep a Changelog), `make_zip.ps1` (ZIP name = `Karel-v<version>.zip`, the extracted folder has that name), publish the ZIP as a GitHub release asset (and on the course platform); the release notes are the CHANGELOG excerpt for that version in Keep-a-Changelog format (`### Added` / `### Changed` / `### Fixed`), not a one-line summary; solutions are handed out only after the exercise.
+  change incompatibly, minor = new worlds or features, patch = fixes. A version that students have never changes; the next change bumps it.
+- Release: bump version, `CHANGELOG.md` (Keep a Changelog), `make_zip.ps1` (ZIP name = `Karel-v<version>.zip`, the extracted folder has that name), publish the ZIP as a GitHub release asset (and on the course platform); the release notes are the CHANGELOG excerpt for that version in Keep-a-Changelog format (`### Added` / `### Changed` / `### Fixed`), not a one-line summary; students get the solutions only after the exercise.
 
 ## Worlds
 
 - Text map: `.` empty, `*` one beeper, `2`–`9` that many beepers, `#` wall block, `> ^ < v` Karel facing east/north/west/south,
   `E N W S` Karel on a beeper; optional last line `karel on n` = n beepers under Karel. The run history and the goal check use the same text
   format, so every state must be expressible in it: at most 9 beepers on a cell other than Karel's.
-- Data: `record WorldMaps(String text, String start, String goal)` (task text, start, goal); `WORLDS` maps a camelCase name to a `Supplier<WorldMaps>` (supplier, because random worlds are generated per run). Students' own worlds go through `openWorld(start, goal)` and never touch the registry.
-- A world taken from Fred Overflow's set gets a permalink to its definition in his `Problem.kt` (link to a commit, not to `master`) as a comment above `world(...)` or in the generator's doc comment; our own worlds say nothing. His reuse conditions (issue 4 of his repo) are quoted in the class comment.
+- Data: `record WorldMaps(String text, String start, String goal)` (task text, start, goal); `WORLDS` maps a camelCase name to a `Supplier<WorldMaps>` (supplier, because a random world generates itself anew on every run). Students' own worlds go through `openWorld(start, goal)` and never touch the registry.
+- A world taken from Fred Overflow's set gets a permalink to its definition in his `Problem.kt` (link to a commit, not to `master`) as a comment above `world(...)` or in the generator's doc comment; the project's own worlds carry no link. The class comment quotes his reuse conditions (issue 4 of his repository).
 - Fixed world: `world(name, start, goal)` in the static block. Random world: a generator method like `lampions()` registered with
   `WORLDS.put`; use `RANDOM` (seeded by `-Dkarel.seed`). Add the enum constant in `World`, the task text as first argument of `world(...)` or of the generator's `WorldMaps`, a solution in
   `solutions/`, a `req` if the engine gains behaviour, and the task to `README.md` with its number.
 - Task numbers: one block of ten per part, numbers already handed out never change. Exercise 01 = 1 to 6 (extras unnumbered), methods 10 to 12,
-  advanced 13 to 16, the 20s are reserved for Karel 2.0.
+  advanced 13 to 16, the 20s wait for Karel 2.0.
 - Task text: one or two sentences, imperative, "changes on every run" for random worlds; the slides use the same wording.
 
 ## Images for slides
@@ -46,16 +46,39 @@ screenshots come from `deckbuild\karel-tools\WindowShot.java` (needs a display).
 
 ## Tracing (OpenFastTrace)
 
-`docs/requirements.md` lists features (`feat~…~1`) and requirements (`req~…~1`); every `req` is covered by a `// [impl->req~…~1]` comment at the
+`docs/requirements.md` lists features (`feat~…~1`) and requirements (`req~…~1`); a `// [impl->req~…~1]` comment covers every `req` at the
 code that implements it. Check with [OpenFastTrace](https://github.com/itsallcode/openfasttrace), run through
-[gg.cmd](https://github.com/eirikb/gg) in the repo root (downloads the tool, works on Windows, macOS and Linux, nothing to install):
+[gg.cmd](https://github.com/eirikb/gg) in the repository root (downloads the tool, works on Windows, macOS and Linux, nothing to install):
 
-```
+```sh
 ./gg.cmd gh/itsallcode/openfasttrace trace docs src      (Windows: gg.cmd gh/itsallcode/openfasttrace trace docs src)
 ```
 
-"ok" and exit code 0 mean full coverage. CI (`.github/workflows/ci.yml`) runs the same command on every push through the gg GitHub Action (`eirikb/gg/action@main`, which passes the workflow token so tool lookups do not hit the API limit), after compiling the engine
+`ok` and exit code 0 mean full coverage. CI (`.github/workflows/ci.yaml`) runs the same command on every push through the gg GitHub Action (`eirikb/gg/action@main`, which passes the workflow token so tool lookups do not hit the API limit), after compiling the engine
 with `-Xlint:all -Werror` and running the starter program headless; the solutions are not in the repository, so CI cannot run them. New engine behaviour: write the `req` first, then the code with its tag. Same tool and style as in SOFEN.
+
+## Prose checks
+
+The `prose` job of CI runs four checks on every push, set up after
+[koppor-skills/prose-checks-ci](https://github.com/koppor/koppor-skills/blob/main/skills/documents/prose-checks-ci/SKILL.md):
+
+- [markdownlint](https://github.com/DavidAnson/markdownlint): Markdown structure (`.markdownlint.yaml`: one sentence per line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML; tables aligned: pad the cells so the pipes line up; a Markdown table formatter in the editor does it).
+- [typos](https://github.com/crate-ci/typos): misspellings in prose, comments and identifiers (`.typos.toml`: `gg.cmd` and the templates excluded).
+- [Vale](https://vale.sh) with the Microsoft and write-good packages (`.vale.ini`; project words in `.vale/styles/config/vocabularies/Karel/accept.txt`) on the prose files, not on `docs/requirements.md`: errors fail the job, warnings appear as annotations, on pull requests as review comments.
+- [textlint](https://textlint.org) with `terminology` and `write-good` (`.textlintrc.json`): consistent terms ("repository", "Visual Studio Code"), wordiness.
+- [heylogs](https://github.com/nbbrd/heylogs) checks that `CHANGELOG.md` follows Keep a Changelog (run through JBang).
+
+Locally:
+
+```sh
+npx --yes markdownlint-cli2 "**/*.md"
+./gg.cmd gh/crate-ci/typos --format brief .
+./gg.cmd gh/errata-ai/vale sync && ./gg.cmd gh/errata-ai/vale README.md CONTRIBUTING.md CHANGELOG.md
+npx --yes --package textlint --package textlint-filter-rule-allowlist --package textlint-rule-terminology --package textlint-rule-write-good textlint README.md CONTRIBUTING.md CHANGELOG.md
+./gg.cmd jbang com.github.nbbrd.heylogs:heylogs-cli:0.19.1:bin check CHANGELOG.md
+```
+
+Visual Studio Code users get both as recommended extensions (`.vscode/extensions.json`).
 
 ## Style
 

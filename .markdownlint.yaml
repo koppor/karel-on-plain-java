@@ -1,0 +1,9 @@
+default: true
+# One sentence per line: a sentence with links easily exceeds 80 characters.
+MD013: false
+# README uses <img align="right"> and <br clear="all"> for the screenshots; keyboard keys as <kbd>.
+MD033:
+  allowed_elements: [img, br, kbd]
+# Tables are aligned: cells padded so that the pipes line up (any Markdown table formatter does it, e.g. the one in Visual Studio Code's markdownlint extension).
+MD060:
+  style: aligned
