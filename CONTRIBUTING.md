@@ -30,7 +30,7 @@ every release is in `CHANGELOG.md`. Rules for agent sessions: `AGENTS.md`.
   `E N W S` Karel on a beeper; optional last line `karel on n` = n beepers under Karel. The run history and the goal check use the same text
   format, so every state must be expressible in it: at most 9 beepers on a cell other than Karel's.
 - Data: `record WorldMaps(String text, String start, String goal)` (task text, start, goal); `WORLDS` maps a camelCase name to a `Supplier<WorldMaps>` (supplier, because random worlds are generated per run). Students' own worlds go through `openWorld(start, goal)` and never touch the registry.
-- A world taken from Fred Overflow's set gets a permalink to its definition in his `Problem.kt` (link to a commit, not to `master`) as a comment above `world(...)` or in the generator's doc comment; our own worlds say nothing. His reuse conditions (issue 4 of his repo) are quoted in the class comment.
+- A world taken from Fred Overflow's set gets a permalink to its definition in his `Problem.kt` (link to a commit, not to `master`) as a comment above `world(...)` or in the generator's doc comment; our own worlds say nothing. His reuse conditions (issue 4 of his repository) are quoted in the class comment.
 - Fixed world: `world(name, start, goal)` in the static block. Random world: a generator method like `lampions()` registered with
   `WORLDS.put`; use `RANDOM` (seeded by `-Dkarel.seed`). Add the enum constant in `World`, the task text as first argument of `world(...)` or of the generator's `WorldMaps`, a solution in
   `solutions/`, a `req` if the engine gains behaviour, and the task to `README.md` with its number.
@@ -87,5 +87,3 @@ Visual Studio Code users get both as recommended extensions (`.vscode/extensions
 - Solutions follow the course rules: store a result in a variable, then use it (no nested calls); one method per idea; names are verbs.
 - Locale: never call `toLowerCase()`/`toUpperCase()`/`String.format` without a locale; use `Locale.ROOT` (a Turkish student machine turned `FILL_THE_HOLES` into `fıll_the_holes`, 1.3.1). CI runs the starter with `-Duser.language=tr -Duser.country=TR`.
 - The engine stays one file without dependencies, so that the ZIP is the whole project.
-
-
