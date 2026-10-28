@@ -13,4 +13,8 @@ KarelExercise01/
 /PLAN.md
 # Vale packages are synced by `vale sync`; only our vocabulary is versioned
 /.vale/styles/*
+/.vale/styles/Microsoft/
+/.vale/styles/write-good/
 !/.vale/styles/config/
+# npm dev dependencies of the prose checks (package.json)
+/node_modules/
