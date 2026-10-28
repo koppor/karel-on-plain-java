@@ -5,15 +5,15 @@ every release is in `CHANGELOG.md`. Rules for agent sessions: `AGENTS.md`.
 
 ## Files
 
-| Path | Content | handed out |
-|---|---|---|
-| `src/karel/Karel.java` | the engine, one file: worlds (text maps and generators), task texts (in `WorldMaps`), commands, conditions, sonar, window, goal check, headless mode, snapshots; version in the header | yes (in the ZIP) |
-| `src/FirstKarelProgram.java` | the starter file: three commands in `DEFUSE_ONE_BOMB`, the lists of commands, conditions and sonar as comments; students copy it per task | yes (in the ZIP) |
-| `Karel-v1.3.1.zip` | complete IntelliJ project per exercise (`.idea/`, `KarelExerciseNN.iml`, `src/`), no top-level folder. 01 = Karel 1.1.0 as handed out 2026-10-21/23 (renamed `v2` when a second version was handed out); 02 = Karel 1.2.0, contains all worlds | yes |
-| `intellij/` | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration, `.iml` with source folder `src`; the name `KarelExercise01` in the template files is a placeholder replaced by the ZIP name | – |
-| `make_zip.ps1` | builds `Karel-v<version>.zip` from `intellij/` + `src/`; run after every change of `src/` | – |
-| `solutions/` | the private repository `karel-on-plain-java-solutions`, cloned into this folder (git-ignored here): one self-contained sample solution per world, same shape as a student file | never public; handed out after the exercise |
-| `docs/requirements.md` | requirements in OpenFastTrace format, see Tracing | – |
+| Path                         | Content                                                                                                                                                                                                                           | handed out                                  |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `src/karel/Karel.java`       | the engine, one file: worlds (text maps and generators), task texts (in `WorldMaps`), commands, conditions, sonar, window, goal check, headless mode, snapshots; version in the header                                            | yes (in the ZIP)                            |
+| `src/FirstKarelProgram.java` | the starter file: three commands in `DEFUSE_ONE_BOMB`, the lists of commands, conditions and sonar as comments; students copy it per task                                                                                         | yes (in the ZIP)                            |
+| `Karel-v1.3.1.zip`           | the complete IntelliJ project students open (`.idea/`, `Karel.iml`, `src/`), no top-level folder; the extracted folder is named like the ZIP                                                                                      | yes                                         |
+| `intellij/`                  | template for the ZIP: `.idea/misc.xml` (JDK 25, language level 25), `modules.xml`, run configuration, `.iml` with source folder `src`; the name `KarelExercise01` in the template files is a placeholder replaced by the ZIP name | –                                           |
+| `make_zip.ps1`               | builds `Karel-v<version>.zip` from `intellij/` + `src/`; run after every change of `src/`                                                                                                                                         | –                                           |
+| `solutions/`                 | the private repository `karel-on-plain-java-solutions`, cloned into this folder (git-ignored here): one self-contained sample solution per world, same shape as a student file                                                    | never public; handed out after the exercise |
+| `docs/requirements.md`       | requirements in OpenFastTrace format, see Tracing                                                                                                                                                                                 | –                                           |
 
 ## Build, test, release
 
@@ -62,9 +62,9 @@ with `-Xlint:all -Werror` and running the starter program headless; the solution
 The `prose` job of CI runs four checks on every push, set up after
 [koppor-skills/prose-checks-ci](https://github.com/koppor/koppor-skills/blob/main/skills/documents/prose-checks-ci/SKILL.md):
 
-- [markdownlint](https://github.com/DavidAnson/markdownlint): Markdown structure (`.markdownlint.yml`: one sentence per line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML; compact tables).
+- [markdownlint](https://github.com/DavidAnson/markdownlint): Markdown structure (`.markdownlint.yml`: one sentence per line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML; tables aligned, pad the cells so the pipes line up).
 - [typos](https://github.com/crate-ci/typos): misspellings in prose, comments and identifiers (`.typos.toml`: `gg.cmd` and the templates excluded).
-- [Vale](https://vale.sh) with the Microsoft and write-good packages (`.vale.ini`; project words in `.vale/styles/config/vocabularies/Karel/accept.txt`): errors fail the job, warnings appear as annotations, on pull requests as review comments.
+- [Vale](https://vale.sh) with the Microsoft and write-good packages (`.vale.ini`; project words in `.vale/styles/config/vocabularies/Karel/accept.txt`) on the prose files, not on `docs/requirements.md`: errors fail the job, warnings appear as annotations, on pull requests as review comments.
 - [textlint](https://textlint.org) with `terminology` and `write-good` (`.textlintrc.json`): consistent terms ("repository", "Visual Studio Code"), wordiness.
 - [heylogs](https://github.com/nbbrd/heylogs) checks that `CHANGELOG.md` follows Keep a Changelog (run through JBang).
 
@@ -87,3 +87,5 @@ Visual Studio Code users get both as recommended extensions (`.vscode/extensions
 - Solutions follow the course rules: store a result in a variable, then use it (no nested calls); one method per idea; names are verbs.
 - Locale: never call `toLowerCase()`/`toUpperCase()`/`String.format` without a locale; use `Locale.ROOT` (a Turkish student machine turned `FILL_THE_HOLES` into `fıll_the_holes`, 1.3.1). CI runs the starter with `-Duser.language=tr -Duser.country=TR`.
 - The engine stays one file without dependencies, so that the ZIP is the whole project.
+
+

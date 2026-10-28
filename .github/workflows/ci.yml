@@ -36,14 +36,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: markdownlint
         uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34 # v25.0.0
-        with:
-          globs: '**/*.md'
       - name: typos
         uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b # v1.51.1
       - name: Vale (Microsoft and write-good styles)
         uses: vale-cli/vale-action@518a9136acc6e6668ce7c00d367051e0941e87ff # v3.0.0
         with:
-          files: all
+          # prose only: docs/requirements.md is a specification full of ids (req~…~1, impl)
+          files: '["README.md", "CONTRIBUTING.md", "CHANGELOG.md", "AGENTS.md"]'
           reporter: ${{ github.event_name == 'pull_request' && 'github-pr-review' || 'github-check' }}
           filter_mode: nofilter
           fail_on_error: true

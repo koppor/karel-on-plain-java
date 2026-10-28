@@ -4,5 +4,6 @@ MD013: false
 # README uses <img align="right"> and <br clear="all"> for the screenshots; keyboard keys as <kbd>.
 MD033:
   allowed_elements: [img, br, kbd]
-# Tables are written compact (no padding around pipes).
-MD060: false
+# Tables are aligned: cells padded so that the pipes line up (align_tables in CONTRIBUTING).
+MD060:
+  style: aligned

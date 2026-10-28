@@ -22,3 +22,4 @@ Initial public release.
 
 [Unreleased]: https://github.com/koppor/karel-on-plain-java/compare/v1.3.1...HEAD
 [1.3.1]: https://github.com/koppor/karel-on-plain-java/releases/tag/v1.3.1
+
