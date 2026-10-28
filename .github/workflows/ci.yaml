@@ -36,8 +36,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
       - name: markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@696eb3f2509270d7b882d2aa68347bc676e7af34 # v25.0.0
+        run: npm run lint:md
       - name: typos
         uses: crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b # v1.51.1
       - name: Vale (Microsoft and write-good styles)
@@ -49,7 +54,7 @@ jobs:
           filter_mode: nofilter
           fail_on_error: true
       - name: textlint (terminology, write-good)
-        run: npx --yes --package textlint --package textlint-filter-rule-allowlist --package textlint-rule-terminology --package textlint-rule-write-good textlint --format github README.md CONTRIBUTING.md CHANGELOG.md
+        run: npm run lint:text
       - name: heylogs (CHANGELOG follows Keep a Changelog)
         uses: jbangdev/jbang-action@03f9f9f6881262b315ec6b6c7d02d8af52ac889a # v0.142.0
         with:

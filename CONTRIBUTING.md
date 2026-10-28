@@ -71,12 +71,13 @@ The `prose` job of CI runs four checks on every push, set up after
 Locally:
 
 ```sh
-npx --yes markdownlint-cli2 "**/*.md"
+npm ci && npm run lint          # markdownlint and textlint, versions pinned in package.json
 ./gg.cmd gh/crate-ci/typos --format brief .
 ./gg.cmd gh/errata-ai/vale sync && ./gg.cmd gh/errata-ai/vale README.md CONTRIBUTING.md CHANGELOG.md
-npx --yes --package textlint --package textlint-filter-rule-allowlist --package textlint-rule-terminology --package textlint-rule-write-good textlint README.md CONTRIBUTING.md CHANGELOG.md
 ./gg.cmd jbang com.github.nbbrd.heylogs:heylogs-cli:0.19.1:bin check CHANGELOG.md
 ```
+
+`package.json` exists only for these checks; the engine has no npm dependency. Dependabot updates the npm packages and the GitHub Actions weekly.
 
 Visual Studio Code users get both as recommended extensions (`.vscode/extensions.json`).
 
