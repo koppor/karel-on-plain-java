@@ -1,0 +1,7 @@
+# markdownlint-cli2: same files locally and in CI
+globs:
+  - "**/*.md"
+ignores:
+  - ".vale/**"
+  - "solutions/**"
+  - "node_modules/**"
