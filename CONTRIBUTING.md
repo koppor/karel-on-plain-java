@@ -62,7 +62,7 @@ with `-Xlint:all -Werror` and running the starter program headless; the solution
 The `prose` job of CI runs four checks on every push, set up after
 [koppor-skills/prose-checks-ci](https://github.com/koppor/koppor-skills/blob/main/skills/documents/prose-checks-ci/SKILL.md):
 
-- [markdownlint](https://github.com/DavidAnson/markdownlint): Markdown structure (`.markdownlint.yml`: one sentence per line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML; tables aligned, pad the cells so the pipes line up).
+- [markdownlint](https://github.com/DavidAnson/markdownlint): Markdown structure (`.markdownlint.yml`: one sentence per line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML; tables aligned: `python scripts/align_tables.py README.md CONTRIBUTING.md` pads the cells so the pipes line up).
 - [typos](https://github.com/crate-ci/typos): misspellings in prose, comments and identifiers (`.typos.toml`: `gg.cmd` and the templates excluded).
 - [Vale](https://vale.sh) with the Microsoft and write-good packages (`.vale.ini`; project words in `.vale/styles/config/vocabularies/Karel/accept.txt`) on the prose files, not on `docs/requirements.md`: errors fail the job, warnings appear as annotations, on pull requests as review comments.
 - [textlint](https://textlint.org) with `terminology` and `write-good` (`.textlintrc.json`): consistent terms ("repository", "Visual Studio Code"), wordiness.

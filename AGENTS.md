@@ -15,4 +15,3 @@ Rules for agent sessions in this folder. Everything technical is in `CONTRIBUTIN
 - String case conversion and formatting always with `Locale.ROOT`; test headless with `-Duser.language=tr -Duser.country=TR` as well.
 - Changes reach `main` only through a pull request that OK reviews; never push to `main` directly. One squashed commit per release.
 - Release notes on GitHub are the CHANGELOG section of that version, verbatim (Keep a Changelog headings), taken from the section between that version's heading and the next one.
-

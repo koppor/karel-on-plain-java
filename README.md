@@ -146,4 +146,3 @@ Karel the Robot was invented by Richard E. Pattis (Stanford University, 1981). C
 engine. Fred Overflow has no affiliation with this project; following his
 [conditions](https://github.com/fredoverflow/karel/issues/4#issuecomment-1110291077), sample solutions are not published.
 Licence: MIT (`LICENSE`).
-
