@@ -1,0 +1,8 @@
+default: true
+# One sentence per line: a sentence with links easily exceeds 80 characters.
+MD013: false
+# README uses <img align="right"> and <br clear="all"> for the screenshots; keyboard keys as <kbd>.
+MD033:
+  allowed_elements: [img, br, kbd]
+# Tables are written compact (no padding around pipes).
+MD060: false

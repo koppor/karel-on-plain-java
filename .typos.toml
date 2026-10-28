@@ -1,0 +1,7 @@
+[files]
+extend-exclude = ["gg.cmd", "solutions/", "intellij/"]
+
+[default.extend-words]
+# names and Karel vocabulary that are not typos
+beeper = "beeper"
+beepers = "beepers"

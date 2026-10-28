@@ -50,12 +50,25 @@ screenshots come from `deckbuild\karel-tools\WindowShot.java` (needs a display).
 code that implements it. Check with [OpenFastTrace](https://github.com/itsallcode/openfasttrace), run through
 [gg.cmd](https://github.com/eirikb/gg) in the repo root (downloads the tool, works on Windows, macOS and Linux, nothing to install):
 
-```
+```sh
 ./gg.cmd gh/itsallcode/openfasttrace trace docs src      (Windows: gg.cmd gh/itsallcode/openfasttrace trace docs src)
 ```
 
 "ok" and exit code 0 mean full coverage. CI (`.github/workflows/ci.yml`) runs the same command on every push through the gg GitHub Action (`eirikb/gg/action@main`, which passes the workflow token so tool lookups do not hit the API limit), after compiling the engine
 with `-Xlint:all -Werror` and running the starter program headless; the solutions are not in the repository, so CI cannot run them. New engine behaviour: write the `req` first, then the code with its tag. Same tool and style as in SOFEN.
+
+## Prose checks
+
+CI lints every Markdown file with [markdownlint](https://github.com/DavidAnson/markdownlint) (`.markdownlint.yml`: one sentence per
+line, so MD013 is off; `img`, `br`, `kbd` allowed as inline HTML) and runs [typos](https://github.com/crate-ci/typos) over the whole
+repository (`.typos.toml`: `gg.cmd` and the templates excluded, Karel vocabulary accepted). Locally:
+
+```sh
+npx --yes markdownlint-cli2 "**/*.md"
+./gg.cmd gh/crate-ci/typos --format brief .
+```
+
+VS Code users get both as recommended extensions (`.vscode/extensions.json`).
 
 ## Style
 
