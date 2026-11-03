@@ -12,6 +12,10 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +45,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 /// Karel the Robot for PROG1 (THU), plain Java 25 with Swing, no libraries.
 ///
-/// Version 1.3.1 (2026-10-28). Semantic versioning: major = commands change
+/// Version 1.4.0 (2026-11-04). Semantic versioning: major = commands change
 /// incompatibly, minor = new worlds or features, patch = fixes.
 ///
 /// Usage in a compact source file next to the folder `karel`:
@@ -78,8 +82,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 public final class Karel {
 
     // [impl->req~dev.version~1]
-    public static final String VERSION = "1.3.1";
-    public static final String RELEASE_DATE = "2026-10-28";
+    public static final String VERSION = "1.4.0";
+    public static final String RELEASE_DATE = "2026-11-04";
 
     /// Thrown when Karel cannot carry out a command.
     // [impl->req~cmd.error-message~1]
@@ -362,6 +366,8 @@ public final class Karel {
                 """);
         WORLDS.put("collectTheStacks", Karel::stacks);
         WORLDS.put("fenceTheField", Karel::fence);
+        WORLDS.put("addOne", Karel::addOne);
+        WORLDS.put("binaryToPile", Karel::binaryToPile);
     }
 
     private static void world(String name, String text, String start,
@@ -592,6 +598,47 @@ public final class Karel {
         throw new IllegalArgumentException("cells are not neighbours");
     }
 
+    /// A binary number of eight bits in a corridor: a beeper is a 1, the lowest
+    /// bit on the right; Karel right of it, facing west.
+    private static char[][] binaryRow(int n) {
+        char[][] cells = grid(10, 3, '#');
+        Arrays.fill(cells[1], '.');
+        for (int bit = 0; bit < 8; bit++) {
+            if ((n >> bit & 1) == 1) {
+                cells[1][8 - bit] = '*';
+            }
+        }
+        cells[1][9] = '<';
+        return cells;
+    }
+
+    /// Task 17: a random number; the goal is the number plus one, Karel on the
+    /// bit it changed last (255 + 1 carries into the spare cell on the left).
+    private static WorldMaps addOne() {
+        int n = RANDOM.nextInt(256);
+        char[][] goal = grid(10, 3, '#');
+        Arrays.fill(goal[1], '.');
+        for (int bit = 0; bit < 9; bit++) {
+            if ((n + 1 >> bit & 1) == 1) {
+                goal[1][8 - bit] = '*';
+            }
+        }
+        int changed = Integer.numberOfTrailingZeros(~n); // the lowest 0 of n becomes the 1
+        goal[1][8 - changed] = 'W';
+        return new WorldMaps("The row is a binary number: a beeper is a 1, an empty cell a 0, the lowest bit on the right. Add 1 to the number; Karel ends on the bit it changed last, facing west. The number changes on every run.",
+                map(binaryRow(n)), map(goal));
+    }
+
+    /// Task 18: the same row; the goal is a pile of that many beepers on Karel's
+    /// start cell, the bits untouched.
+    private static WorldMaps binaryToPile() {
+        int n = 1 + RANDOM.nextInt(255);
+        char[][] goal = binaryRow(n);
+        goal[1][9] = 'E';
+        return new WorldMaps("The row is a binary number as in addOne. Read it and build a pile with that many beepers on the cell where Karel starts; the bits stay as they are. Karel ends on the pile, facing east. The number changes on every run.",
+                map(binaryRow(n)), map(goal) + "karel on " + n + "\n");
+    }
+
     private static char[][] grid(int width, int height, char fill) {
         char[][] cells = new char[height][width];
         for (char[] row : cells) {
@@ -719,6 +766,7 @@ public final class Karel {
     private static JPanel panel;
     private static JLabel status;
     private static JCheckBox showGoal;
+    private static JCheckBox edit;
     private static JButton replay;
     private static JSlider stepSlider;
     private static JLabel stepLabel;
@@ -755,7 +803,9 @@ public final class Karel {
         FETCH_THE_BEEPER,
         BUILD_THE_STAIRCASE,
         COLLECT_THE_STACKS,
-        FENCE_THE_FIELD;
+        FENCE_THE_FIELD,
+        ADD_ONE,
+        BINARY_TO_PILE;
 
         /// Name in camelCase, e.g. `obtainArtifact`: key of the map and window title.
         String camelCase() {
@@ -1063,6 +1113,46 @@ public final class Karel {
         });
     }
 
+    /// Edit mode: a left click cycles the cell (empty, beeper, wall), a right
+    /// click puts Karel on the cell or, on Karel's cell, turns it left.
+    // [impl->req~window.edit~1]
+    private static void editCell(MouseEvent e) {
+        synchronized (LOCK) {
+            double worldW = state.width * CELL + 2;
+            double worldH = state.height * CELL + 2;
+            double scale = Math.min(panel.getWidth() / worldW, panel.getHeight() / worldH);
+            double offX = (panel.getWidth() - worldW * scale) / 2 + 1;
+            double offY = (panel.getHeight() - worldH * scale) / 2 + 1;
+            int col = (int) Math.floor((e.getX() - offX) / scale / CELL);
+            int row = (int) Math.floor((e.getY() - offY) / scale / CELL);
+            if (col < 0
+                    || row < 0
+                    || col >= state.width
+                    || row >= state.height) {
+                return;
+            }
+            boolean karelHere = col == state.x && row == state.y;
+            if (SwingUtilities.isRightMouseButton(e)) {
+                if (karelHere) {
+                    state.dir = (state.dir + 1) % 4;
+                } else if (!state.block[col][row]) {
+                    state.x = col;
+                    state.y = row;
+                }
+            } else if (karelHere) {
+                state.beepers[col][row] = state.beepers[col][row] == 0 ? 1 : 0;
+            } else if (state.block[col][row]) {
+                state.block[col][row] = false;
+            } else if (state.beepers[col][row] == 0) {
+                state.beepers[col][row] = 1;
+            } else {
+                state.beepers[col][row] = 0;
+                state.block[col][row] = true;
+            }
+        }
+        panel.repaint();
+    }
+
     /// Shows the recorded state after step `index`; called when the user drags
     /// the step slider.
     // [impl->req~window.step-slider~1]
@@ -1154,6 +1244,29 @@ public final class Karel {
         showGoal = new JCheckBox("Show goal");
         showGoal.setEnabled(goal != null);
         showGoal.addActionListener(e -> panel.repaint());
+        // [impl->req~window.edit~1]
+        edit = new JCheckBox("Edit");
+        edit.setToolTipText("Click a cell: empty, beeper, wall; right-click: Karel there, or turn Karel");
+        panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (edit.isSelected()) {
+                    editCell(e);
+                }
+            }
+        });
+        JButton copyMap = new JButton("Copy map");
+        copyMap.setToolTipText("Copies the shown world as a text map for openWorld(start, goal)");
+        copyMap.addActionListener(e -> {
+            String text;
+            synchronized (LOCK) {
+                text = state.toMap();
+            }
+            Toolkit.getDefaultToolkit()
+                    .getSystemClipboard()
+                    .setContents(new StringSelection(text), null);
+            updateStatus("Map copied: paste it into openWorld(start, goal)", Color.DARK_GRAY);
+        });
         // [impl->req~window.status~1]
         status = new JLabel(" ");
         status.setFont(status.getFont().deriveFont(Font.BOLD));
@@ -1184,7 +1297,11 @@ public final class Karel {
         JPanel top = new JPanel(new BorderLayout(8, 0));
         top.add(speedCaption, BorderLayout.WEST);
         top.add(speed, BorderLayout.CENTER);
-        top.add(showGoal, BorderLayout.EAST);
+        JPanel checks = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        checks.add(showGoal);
+        checks.add(Box.createHorizontalStrut(8));
+        checks.add(edit);
+        top.add(checks, BorderLayout.EAST);
         replay = new JButton("Replay");
         replay.setEnabled(false);
         replay.addActionListener(e -> {
@@ -1198,6 +1315,8 @@ public final class Karel {
         buttons.add(replay);
         buttons.add(Box.createHorizontalStrut(8));
         buttons.add(close);
+        buttons.add(Box.createHorizontalStrut(8));
+        buttons.add(copyMap);
         JPanel sliders = new JPanel(new GridLayout(0, 1, 0, 2));
         sliders.add(stepRow);
         sliders.add(top);
