@@ -102,7 +102,7 @@ every run; your program must work for all.
 | 15    | `COLLECT_THE_STACKS`  | Three stacks of beepers lie in the corridor. Collect all and drop the total as one stack at the east wall (random).                                                            |
 | 16    | `FENCE_THE_FIELD`     | Put a beeper on every border cell of the square field and return to the corner, facing east. The size changes on every run (random).                                           |
 | 17    | `ADD_ONE`             | The row is a binary number: a beeper is a 1, an empty cell a 0, the lowest bit on the right. Add 1 to the number; Karel ends on the bit it changed last, facing west (random). |
-| 18    | `BINARY_TO_PILE`      | The row is a binary number as in addOne. Build a pile with that many beepers on the cell where Karel starts; the bits stay. Karel ends on the pile, facing east (random).      |
+| 18    | `BINARY_TO_PILE`      | The row is a binary number as in `addOne`. Build a pile with that many beepers on the cell where Karel starts; the bits stay. Karel ends on the pile, facing east (random).    |
 
 ## Own worlds
 
