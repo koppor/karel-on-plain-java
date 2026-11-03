@@ -56,7 +56,7 @@ jobs:
       - name: textlint (terminology, write-good)
         run: npm run lint:text
       - name: heylogs (CHANGELOG follows Keep a Changelog)
-        uses: jbangdev/jbang-action@03f9f9f6881262b315ec6b6c7d02d8af52ac889a # v0.142.0
+        uses: jbangdev/jbang-action@cc5515892c9ab66bc1f9644425c8b28003aed1fe # v0.143.0
         with:
           script: com.github.nbbrd.heylogs:heylogs-cli:0.19.1:bin
           scriptargs: check CHANGELOG.md
