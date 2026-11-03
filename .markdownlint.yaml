@@ -7,3 +7,6 @@ MD033:
 # Tables are aligned: cells padded so that the pipes line up (any Markdown table formatter does it, e.g. the one in Visual Studio Code's markdownlint extension).
 MD060:
   style: aligned
+# Keep a Changelog repeats Added/Changed under every version
+MD024:
+  siblings_only: true
