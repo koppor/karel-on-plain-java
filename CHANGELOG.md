@@ -5,9 +5,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+## [1.4.0] – 2026-11-04
+
+### Added
+
+- Worlds `ADD_ONE` (task 17, a binary counter) and `BINARY_TO_PILE` (task 18, the binary number as a pile), random like the other corridor worlds.
+- Edit mode in the window: with Edit ticked, a click cycles a cell through empty, beeper and wall, a right click puts Karel on the cell or turns it; Copy map puts the shown world on the clipboard as a text map for `openWorld(start, goal)`.
+
 ### Changed
 
 - Engine formatted with Netflix jfmt 0.9.0; `./jfmt.sh --check` runs in CI.
+- The task table lists tasks 17 and 18; the own-worlds section no longer names the version that introduced them, that is this changelog's job.
 
 ## [1.3.1] – 2026-10-28
 
@@ -24,5 +32,6 @@ Initial public release.
 - Requirements in `docs/requirements.md` with OpenFastTrace tags in the code; CI compiles with `-Werror`, runs the starter headless (also under a Turkish locale) and traces the requirements.
 - `make_zip.ps1` builds the project students open, `Karel-v<version>.zip`.
 
-[Unreleased]: https://github.com/koppor/karel-on-plain-java/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/koppor/karel-on-plain-java/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/koppor/karel-on-plain-java/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/koppor/karel-on-plain-java/releases/tag/v1.3.1

@@ -248,6 +248,17 @@ Covers:
 
 * `feat~window~1`
 
+`req~window.edit~1`
+
+With the Edit box ticked, a click on a cell cycles it through empty, beeper and wall, and a right click puts Karel on the cell or turns it;
+Copy map puts the shown world on the clipboard as a text map, ready for `openWorld(start, goal)`.
+
+Needs: impl
+
+Covers:
+
+* `feat~window~1`
+
 ### Developer mode
 
 `req~dev.headless~1`
