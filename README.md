@@ -100,10 +100,12 @@ every run; your program must work for all.
 | 14    | `BUILD_THE_STAIRCASE` | Build stacks of 1, 2, 3, ... 9 beepers on the nine cells ahead and stop on the last one.                                             |
 | 15    | `COLLECT_THE_STACKS`  | Three stacks of beepers lie in the corridor. Collect all and drop the total as one stack at the east wall (random).                  |
 | 16    | `FENCE_THE_FIELD`     | Put a beeper on every border cell of the square field and return to the corner, facing east. The size changes on every run (random). |
+| 17    | `handouts/AddOne.java`       | Own world: the row between the walls is a binary number, a beeper is a 1, the lowest bit on the right. Add 1; Karel ends on the bit it changed last, facing west. |
+| 18    | `handouts/BinaryToPile.java` | Own world: read the binary number and build a pile with that many beepers on the start cell; the bits stay. Karel ends on the pile, facing east. |
 
 ## Own worlds
 
-Since Karel 1.3.0 you can draw your own world in the program, as two text blocks: the start and the goal. Same characters as above:
+You can draw your own world in the program, as two text blocks: the start and the goal. Same characters as above:
 `.` empty, `*` one beeper, `2` to `9` that many, `#` wall, `>` `^` `<` `v` Karel facing east, north, west, south, `E` `N` `W` `S` Karel on a beeper.
 
 ```java
@@ -122,6 +124,8 @@ void main() {
     moveForward();
 }
 ```
+
+Tasks 17 and 18 come as ready files in `handouts/`: `AddOne.java` and `BinaryToPile.java` contain the world and the goal, plus two more variants of the number in the comments. Copy the file into `src`, write your commands below `openWorld`, run.
 
 All rows must have the same length, exactly one Karel, and start and goal the same size. `openWorld(start)` with one map only runs
 without a goal check. Share a world with others by sharing the two text blocks.

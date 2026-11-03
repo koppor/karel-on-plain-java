@@ -5,6 +5,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+### Added
+
+- `handouts/`: ready files for tasks in own worlds, `AddOne.java` (task 17, a binary counter) and `BinaryToPile.java` (task 18, the binary number as a pile), each with two more variants in the comments.
+
+### Changed
+
+- README: tasks 17 and 18 in the task table; the own-worlds section no longer names the version that introduced them, that is this changelog's job.
+
 ## [1.3.1] – 2026-10-28
 
 Initial public release.

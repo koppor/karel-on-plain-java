@@ -14,3 +14,5 @@ KarelExercise01/
 # Vale packages are synced by `vale sync`; only our vocabulary is versioned
 /.vale/styles/*
 !/.vale/styles/config/
+# markdownlint-cli2 from the CI, run locally
+node_modules/
