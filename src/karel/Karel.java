@@ -6,10 +6,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -41,8 +41,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 /// Karel the Robot for PROG1 (THU), plain Java 25 with Swing, no libraries.
 ///
-/// Version 1.3.1 (2026-10-28). Semantic versioning: major = commands change incompatibly,
-/// minor = new worlds or features, patch = fixes.
+/// Version 1.3.1 (2026-10-28). Semantic versioning: major = commands change
+/// incompatibly, minor = new worlds or features, patch = fixes.
 ///
 /// Usage in a compact source file next to the folder `karel`:
 ///
@@ -55,21 +55,26 @@ import javax.swing.UnsupportedLookAndFeelException;
 /// }
 /// ```
 ///
-/// Commands and conditions follow Karel by Fred Overflow (https://github.com/fredoverflow/karel); eleven worlds are modelled on
-/// his problems, each with a permalink to its source in `Problem.kt` at the world. Karel the Robot was invented by Richard Pattis
-/// (Stanford, 1981); Fred Overflow has no affiliation with this project. His conditions for reuse
-/// (https://github.com/fredoverflow/karel/issues/4#issuecomment-1110291077): keep his software free, credit Pattis as the inventor,
-/// do not publish solutions to the majority of the puzzles. Worlds are
-/// text maps: `.` empty, `*` one beeper, `2`–`9` that many beepers, `#` wall
-/// block, `> ^ < v` Karel facing east/north/west/south, `E N W S` Karel on a beeper. An optional
-/// last line `karel on n` puts n beepers under Karel (n > 1).
+/// Commands and conditions follow Karel by Fred Overflow
+/// (https://github.com/fredoverflow/karel); eleven worlds are modelled on his
+/// problems, each with a permalink to its source in `Problem.kt` at the world.
+/// Karel the Robot was invented by Richard Pattis (Stanford, 1981); Fred
+/// Overflow has no affiliation with this project. His conditions for reuse
+/// (https://github.com/fredoverflow/karel/issues/4#issuecomment-1110291077):
+/// keep his software free, credit Pattis as the inventor, do not publish
+/// solutions to the majority of the puzzles. Worlds are text maps: `.` empty,
+/// `*` one beeper, `2`–`9` that many beepers, `#` wall block, `> ^ < v` Karel
+/// facing east/north/west/south, `E N W S` Karel on a beeper. An optional last
+/// line `karel on n` puts n beepers under Karel (n > 1).
 ///
-/// Every world carries a short task text (`WorldMaps.text`), shown under the world in the window and printed to the
-/// console when the world opens, so a task is understandable without the slides (OK 2026-10-27).
+/// Every world carries a short task text (`WorldMaps.text`), shown under the
+/// world in the window and printed to the console when the world opens, so a
+/// task is understandable without the slides (OK 2026-10-27).
 ///
-/// Developer mode: `-Dkarel.headless=true` runs without window and delay and prints the
-/// result and the final map. `-Dkarel.snapshot=world.png` (with `-Dkarel.snapshotGoal=true`)
-/// saves the start world as an image and exits; `-Dkarel.snapshotEnd=true` saves the goal state instead.
+/// Developer mode: `-Dkarel.headless=true` runs without window and delay and
+/// prints the result and the final map. `-Dkarel.snapshot=world.png` (with
+/// `-Dkarel.snapshotGoal=true`) saves the start world as an image and exits;
+/// `-Dkarel.snapshotEnd=true` saves the goal state instead.
 public final class Karel {
 
     // [impl->req~dev.version~1]
@@ -91,17 +96,20 @@ public final class Karel {
     private static final int[] DY = {0, -1, 0, 1};
 
     // [impl->req~world.task-text~1]
-    /// A world: its task text (one or two sentences, shown under the world and in the console), the start map and the goal map; `goal` may be null for an own world without goal check.
-    public record WorldMaps(String text, String start, String goal) {
-    }
+    /// A world: its task text (one or two sentences, shown under the world and
+    /// in the console), the start map and the goal map; `goal` may be null for
+    /// an own world without goal check.
+    public record WorldMaps(String text, String start, String goal) {}
 
-    /// Built-in worlds by camelCase name; a supplier, because random worlds are generated anew on every run.
+    /// Built-in worlds by camelCase name; a supplier, because random worlds are
+    /// generated anew on every run.
     private static final Map<String, Supplier<WorldMaps>> WORLDS = new LinkedHashMap<>();
 
     static {
         // name, start map, goal map
         // after Fred Overflow's obtainArtifact: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L106
-        world("obtainArtifact", "The artifact lies behind the pillar. Fetch it and bring it back to where Karel started.", """
+        world("obtainArtifact", "The artifact lies behind the pillar. Fetch it and bring it back to where Karel started.",
+                """
                 ..........
                 ..........
                 ..........
@@ -112,7 +120,8 @@ public final class Karel {
                 ....#.....
                 ....^.....
                 ..........
-                """, """
+                """,
+                """
                 ..........
                 ..........
                 ..........
@@ -125,7 +134,8 @@ public final class Karel {
                 ..........
                 """);
         // after Fred Overflow's defuseOneBomb: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L123
-        world("defuseOneBomb", "A bomb lies at the other wall. Pick it up and carry it back to the start.", """
+        world("defuseOneBomb", "A bomb lies at the other wall. Pick it up and carry it back to the start.",
+                """
                 ..........
                 ..........
                 ..........
@@ -136,7 +146,8 @@ public final class Karel {
                 ..........
                 ..........
                 >........*
-                """, """
+                """,
+                """
                 ..........
                 ..........
                 ..........
@@ -149,7 +160,8 @@ public final class Karel {
                 >.........
                 """);
         // after Fred Overflow's climbTheStairs: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L178
-        world("climbTheStairs", "Climb the stairs to the top. Karel ends on the top step, facing east.", """
+        world("climbTheStairs", "Climb the stairs to the top. Karel ends on the top step, facing east.",
+                """
                 ..........
                 ..........
                 ..........
@@ -160,7 +172,8 @@ public final class Karel {
                 ....####..
                 ...#####..
                 >.######..
-                """, """
+                """,
+                """
                 ..........
                 ..........
                 ..........
@@ -173,7 +186,8 @@ public final class Karel {
                 ..######..
                 """);
         // after Fred Overflow's fillTheHoles: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L194
-        world("fillTheHoles", "Drop one beeper into each of the four holes, then walk on.", """
+        world("fillTheHoles", "Drop one beeper into each of the four holes, then walk on.",
+                """
                 ..........
                 ..........
                 ..........
@@ -184,7 +198,8 @@ public final class Karel {
                 ..........
                 .>........
                 ##.#.#.#.#
-                """, """
+                """,
+                """
                 ..........
                 ..........
                 ..........
@@ -197,7 +212,8 @@ public final class Karel {
                 ##*#*#*#*#
                 """);
         // after Fred Overflow's mowTheLawn: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L227
-        world("mowTheLawn", "Pick up all 36 beepers, row by row, like mowing a lawn.", """
+        world("mowTheLawn", "Pick up all 36 beepers, row by row, like mowing a lawn.",
+                """
                 ..........
                 ..........
                 ..******..
@@ -208,7 +224,8 @@ public final class Karel {
                 .>******..
                 ..........
                 ..........
-                """, """
+                """,
+                """
                 ..........
                 ..........
                 .<........
@@ -221,7 +238,8 @@ public final class Karel {
                 ..........
                 """);
         // after Fred Overflow's defuseTwoBombs: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L140
-        world("defuseTwoBombs", "Two bombs, one at each wall. Defuse both: call defuseOneBomb twice.", """
+        world("defuseTwoBombs", "Two bombs, one at each wall. Defuse both: call defuseOneBomb twice.",
+                """
                 *.........
                 ..........
                 ..........
@@ -232,7 +250,8 @@ public final class Karel {
                 ..........
                 ..........
                 >........*
-                """, """
+                """,
+                """
                 ..........
                 ..........
                 ..........
@@ -245,7 +264,8 @@ public final class Karel {
                 ^.........
                 """);
         // after Fred Overflow's practiceHomeRun: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L158
-        world("practiceHomeRun", "Pick up the beepers in all four corners and return home.", """
+        world("practiceHomeRun", "Pick up the beepers in all four corners and return home.",
+                """
                 *........*
                 ..........
                 ..........
@@ -256,7 +276,8 @@ public final class Karel {
                 ..........
                 ..........
                 E........*
-                """, """
+                """,
+                """
                 ..........
                 ..........
                 ..........
@@ -269,7 +290,8 @@ public final class Karel {
                 >.........
                 """);
         // after Fred Overflow's saveTheFlower: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L210
-        world("saveTheFlower", "Carry the flower to the top of the mountain and climb down on the other side.", """
+        world("saveTheFlower", "Carry the flower to the top of the mountain and climb down on the other side.",
+                """
                 ..........
                 ..........
                 .....#....
@@ -280,7 +302,8 @@ public final class Karel {
                 ...#####..
                 ..#######.
                 >*#######.
-                """, """
+                """,
+                """
                 ..........
                 .....*....
                 .....#....
@@ -293,7 +316,8 @@ public final class Karel {
                 ..#######>
                 """);
         // after Fred Overflow's stealOlympicFire: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L324
-        world("stealOlympicFire", "Climb the stairs, take the fire, and jump down on the far side.", """
+        world("stealOlympicFire", "Climb the stairs, take the fire, and jump down on the far side.",
+                """
                 ..........
                 ..........
                 ..........
@@ -304,7 +328,8 @@ public final class Karel {
                 ....####..
                 ...#####..
                 >.######..
-                """, """
+                """,
+                """
                 ..........
                 ..........
                 ..........
@@ -323,11 +348,13 @@ public final class Karel {
         WORLDS.put("carryTheHarvest", Karel::harvest);
         WORLDS.put("copyTheTower", Karel::tower);
         WORLDS.put("fetchTheBeeper", Karel::fetch);
-        world("buildTheStaircase", "Build stacks of 1, 2, 3, ... 9 beepers on the nine cells ahead and stop on the last one.", """
+        world("buildTheStaircase", "Build stacks of 1, 2, 3, ... 9 beepers on the nine cells ahead and stop on the last one.",
+                """
                 ##########
                 >.........
                 ##########
-                """, """
+                """,
+                """
                 ##########
                 .12345678>
                 ##########
@@ -337,14 +364,13 @@ public final class Karel {
         WORLDS.put("fenceTheField", Karel::fence);
     }
 
-    private static void world(String name, String text, String start, String goal) {
+    private static void world(String name, String text, String start,
+            String goal) {
         WORLDS.put(name, () -> new WorldMaps(text, start, goal));
     }
 
     // [impl->req~world.random~1]
-    private static final Random RANDOM = Long.getLong("karel.seed") == null
-            ? new Random()
-            : new Random(Long.getLong("karel.seed"));
+    private static final Random RANDOM = Long.getLong("karel.seed") == null ? new Random() : new Random(Long.getLong("karel.seed"));
 
     /// Ten lampions on the floor, ceiling hanging down to a random depth in each column.
     /// After Fred Overflow's hangTheLampions: https://github.com/fredoverflow/karel/blob/9cb021de0a4d778346b54cdfac68bd46ab4dadde/src/main/kotlin/logic/Problem.kt#L372
@@ -362,7 +388,8 @@ public final class Karel {
         }
         start[9][0] = 'E';
         goal[9][9] = '>';
-        return new WorldMaps("Ten lampions lie on the floor. Hang each one directly under the ceiling; the heights differ on every run.", map(start), map(goal));
+        return new WorldMaps("Ten lampions lie on the floor. Hang each one directly under the ceiling; the heights differ on every run.",
+                map(start), map(goal));
     }
 
     /// One winding corridor without crossings or dead ends, beeper at its end.
@@ -388,10 +415,12 @@ public final class Karel {
         start[last[1]][last[0]] = '*';
         start[first[1]][first[0]] = ">^<v".charAt(direction(first, path.get(1)));
         goal[last[1]][last[0]] = ">^<v".charAt(direction(path.get(path.size() - 2), last));
-        return new WorldMaps("Follow the corridor to its end and pick up the diamond. The corridor is new on every run.", map(start), map(goal));
+        return new WorldMaps("Follow the corridor to its end and pick up the diamond. The corridor is new on every run.",
+                map(start), map(goal));
     }
 
-    /// A corridor of odd random length; Karel starts at its left end and should drop a beeper in the middle.
+    /// A corridor of odd random length; Karel starts at its left end and should
+    /// drop a beeper in the middle.
     private static WorldMaps center() {
         int length = 7 + 2 * RANDOM.nextInt(4);
         char[][] start = grid(length, 3, '#');
@@ -400,10 +429,12 @@ public final class Karel {
         Arrays.fill(goal[1], '.');
         start[1][0] = '>';
         goal[1][(length - 1) / 2] = 'E';
-        return new WorldMaps("Find the middle of the corridor and drop a beeper there. The length is odd and changes on every run.", map(start), map(goal));
+        return new WorldMaps("Find the middle of the corridor and drop a beeper there. The length is odd and changes on every run.",
+                map(start), map(goal));
     }
 
-    /// A random number of beepers along a row; all of them should end up on the cell at the east wall.
+    /// A random number of beepers along a row; all of them should end up on the
+    /// cell at the east wall.
     private static WorldMaps harvest() {
         char[][] start = grid(10, 3, '#');
         char[][] goal = grid(10, 3, '#');
@@ -422,10 +453,12 @@ public final class Karel {
         }
         start[1][0] = '>';
         goal[1][9] = '>';
-        return new WorldMaps("Collect all beepers on the way to the east wall and drop them there as one stack. Their number changes on every run.", map(start), map(goal) + "karel on " + count + "\n");
+        return new WorldMaps("Collect all beepers on the way to the east wall and drop them there as one stack. Their number changes on every run.",
+                map(start), map(goal) + "karel on " + count + "\n");
     }
 
-    /// A tower of 2 to 9 beepers under Karel; a tower of the same height should stand at the east wall.
+    /// A tower of 2 to 9 beepers under Karel; a tower of the same height should
+    /// stand at the east wall.
     private static WorldMaps tower() {
         int height = 2 + RANDOM.nextInt(8);
         char[][] start = grid(10, 3, '#');
@@ -436,10 +469,12 @@ public final class Karel {
         goal[1][0] = (char) ('0' + height);
         goal[1][9] = '>';
         String under = "karel on " + height + "\n";
-        return new WorldMaps("Karel stands on a tower of beepers. Build a tower of the same height at the east wall; the first tower stays.", map(start) + under, map(goal) + under);
+        return new WorldMaps("Karel stands on a tower of beepers. Build a tower of the same height at the east wall; the first tower stays.",
+                map(start) + under, map(goal) + under);
     }
 
-    /// One beeper at a random distance; Karel brings it back to the start (and faces west afterwards).
+    /// One beeper at a random distance; Karel brings it back to the start (and
+    /// faces west afterwards).
     private static WorldMaps fetch() {
         char[][] start = grid(10, 3, '#');
         char[][] goal = grid(10, 3, '#');
@@ -448,17 +483,20 @@ public final class Karel {
         start[1][0] = '>';
         start[1][3 + RANDOM.nextInt(6)] = '*';
         goal[1][0] = 'W';
-        return new WorldMaps("One beeper lies ahead at an unknown distance. Bring it back to the start; Karel ends facing west.", map(start), map(goal));
+        return new WorldMaps("One beeper lies ahead at an unknown distance. Bring it back to the start; Karel ends facing west.",
+                map(start), map(goal));
     }
 
-    /// Three stacks of 1 to 3 beepers at random places; all beepers end as one stack at the east wall.
+    /// Three stacks of 1 to 3 beepers at random places; all beepers end as one
+    /// stack at the east wall.
     private static WorldMaps stacks() {
         char[][] start = grid(10, 3, '#');
         char[][] goal = grid(10, 3, '#');
         Arrays.fill(start[1], '.');
         Arrays.fill(goal[1], '.');
         int sum = 0;
-        List<Integer> cols = new ArrayList<>(List.of(1, 2, 3, 4, 5, 6, 7, 8));
+        List<Integer> cols = new ArrayList<>(List.of(1, 2, 3, 4, 5, 6,
+                7, 8));
         Collections.shuffle(cols, RANDOM);
         for (int k = 0; k < 3; k++) {
             int n = 1 + RANDOM.nextInt(3);
@@ -467,10 +505,12 @@ public final class Karel {
         }
         start[1][0] = '>';
         goal[1][9] = '>';
-        return new WorldMaps("Three stacks of beepers lie in the corridor. Collect all of them and drop the total as one stack at the east wall.", map(start), map(goal) + "karel on " + sum + "\n");
+        return new WorldMaps("Three stacks of beepers lie in the corridor. Collect all of them and drop the total as one stack at the east wall.",
+                map(start), map(goal) + "karel on " + sum + "\n");
     }
 
-    /// A square field of random size; Karel puts a beeper on every border cell and returns to the corner.
+    /// A square field of random size; Karel puts a beeper on every border cell
+    /// and returns to the corner.
     private static WorldMaps fence() {
         int size = 5 + RANDOM.nextInt(5);
         char[][] start = grid(size + 2, size + 2, '#');
@@ -478,17 +518,22 @@ public final class Karel {
         for (int row = 1; row <= size; row++) {
             for (int col = 1; col <= size; col++) {
                 start[row][col] = '.';
-                boolean border = row == 1 || row == size || col == 1 || col == size;
+                boolean border = row == 1
+                        || row == size
+                        || col == 1
+                        || col == size;
                 goal[row][col] = border ? '*' : '.';
             }
         }
         start[size][1] = '>';
         goal[size][1] = 'E';
-        return new WorldMaps("Put a beeper on every border cell of the square field and return to the corner, facing east. The size changes on every run.", map(start), map(goal));
+        return new WorldMaps("Put a beeper on every border cell of the square field and return to the corner, facing east. The size changes on every run.",
+                map(start), map(goal));
     }
 
     /// Depth-first search for a path whose cells touch only their predecessor and successor.
-    private static boolean grow(List<int[]> path, boolean[][] used, int length, int[] budget) {
+    private static boolean grow(List<int[]> path, boolean[][] used, int length,
+            int[] budget) {
         if (path.size() >= length) {
             return true;
         }
@@ -501,7 +546,12 @@ public final class Karel {
         for (int d : dirs) {
             int nx = cell[0] + DX[d];
             int ny = cell[1] + DY[d];
-            if (nx < 0 || ny < 0 || nx >= 10 || ny >= 10 || used[nx][ny] || touchesPath(nx, ny, cell, used)) {
+            if (nx < 0
+                    || ny < 0
+                    || nx >= 10
+                    || ny >= 10
+                    || used[nx][ny]
+                    || touchesPath(nx, ny, cell, used)) {
                 continue;
             }
             used[nx][ny] = true;
@@ -515,12 +565,18 @@ public final class Karel {
         return false;
     }
 
-    private static boolean touchesPath(int x, int y, int[] from, boolean[][] used) {
+    private static boolean touchesPath(int x, int y, int[] from,
+            boolean[][] used) {
         for (int d = 0; d < 4; d++) {
             int nx = x + DX[d];
             int ny = y + DY[d];
             boolean isFrom = nx == from[0] && ny == from[1];
-            if (nx >= 0 && ny >= 0 && nx < 10 && ny < 10 && used[nx][ny] && !isFrom) {
+            if (nx >= 0
+                    && ny >= 0
+                    && nx < 10
+                    && ny < 10
+                    && used[nx][ny]
+                    && !isFrom) {
                 return true;
             }
         }
@@ -559,8 +615,10 @@ public final class Karel {
         final int width;
         final int height;
         final boolean[][] block;
+
         /// Number of beepers on each cell.
         final int[][] beepers;
+
         int x;
         int y;
         int dir;
@@ -570,7 +628,8 @@ public final class Karel {
             String[] rows = map.strip().split("\\R");
             int underKarel = 0;
             if (rows[rows.length - 1].strip().startsWith("karel on ")) {
-                underKarel = Integer.parseInt(rows[rows.length - 1].strip().substring("karel on ".length()));
+                underKarel = Integer.parseInt(rows[rows.length - 1].strip()
+                        .substring("karel on ".length()));
                 rows = Arrays.copyOf(rows, rows.length - 1);
             }
             height = rows.length;
@@ -581,7 +640,12 @@ public final class Karel {
             for (int row = 0; row < height; row++) {
                 String line = rows[row].strip();
                 if (line.length() != width) {
-                    throw new KarelException("map row " + (row + 1) + " has " + line.length() + " characters, the first row has " + width);
+                    throw new KarelException("map row "
+                            + (row + 1)
+                            + " has "
+                            + line.length()
+                            + " characters, the first row has "
+                            + width);
                 }
                 for (int col = 0; col < width; col++) {
                     char c = line.charAt(col);
@@ -609,7 +673,11 @@ public final class Karel {
         }
 
         boolean isFree(int cx, int cy) {
-            return cx >= 0 && cy >= 0 && cx < width && cy < height && !block[cx][cy];
+            return cx >= 0
+                    && cy >= 0
+                    && cx < width
+                    && cy < height
+                    && !block[cx][cy];
         }
 
         String toMap() {
@@ -617,7 +685,11 @@ public final class Karel {
             for (int row = 0; row < height; row++) {
                 for (int col = 0; col < width; col++) {
                     int n = beepers[col][row];
-                    char c = block[col][row] ? '#' : n == 0 ? '.' : n == 1 ? '*' : (char) ('0' + Math.min(n, 9));
+                    char c = block[col][row]
+                            ? '#'
+                            : n == 0
+                                    ? '.'
+                                    : n == 1 ? '*' : (char) ('0' + Math.min(n, 9));
                     if (col == x && row == y) {
                         c = (n > 0 ? "ENWS" : ">^<v").charAt(dir);
                     }
@@ -626,7 +698,9 @@ public final class Karel {
                 sb.append('\n');
             }
             if (beepers[x][y] > 1) {
-                sb.append("karel on ").append(beepers[x][y]).append('\n');
+                sb.append("karel on ")
+                  .append(beepers[x][y])
+                  .append('\n');
             }
             return sb.toString();
         }
@@ -648,15 +722,17 @@ public final class Karel {
     private static JButton replay;
     private static JSlider stepSlider;
     private static JLabel stepLabel;
+
     /// True while the program itself moves the step slider (not the user).
     private static boolean sliderUpdate;
+
     /// Maps of all states of the run, for Replay.
     private static final List<String> HISTORY = new ArrayList<>();
+
     private static String finalMessage;
     private static Color finalColor;
 
-    private Karel() {
-    }
+    private Karel() {}
 
     // ------------------------------------------------------------------ world
 
@@ -683,7 +759,9 @@ public final class Karel {
 
         /// Name in camelCase, e.g. `obtainArtifact`: key of the map and window title.
         String camelCase() {
-            String[] words = name().toLowerCase(Locale.ROOT).split("_");  // Locale.ROOT: in Turkish, "I".toLowerCase() is a dotless ı
+            String[] words = name()
+                    .toLowerCase(Locale.ROOT)
+                    .split("_"); // Locale.ROOT: in Turkish, "I".toLowerCase() is a dotless ı
             StringBuilder sb = new StringBuilder(words[0]);
             for (int i = 1; i < words.length; i++) {
                 sb.append(Character.toUpperCase(words[i].charAt(0))).append(words[i].substring(1));
@@ -698,7 +776,9 @@ public final class Karel {
         open("World." + world.name(), maps);
     }
 
-    /// Opens an own world from two text maps (start and goal), e.g. written as text blocks in the program:
+    /// Opens an own world from two text maps (start and goal), e.g. written as
+    /// text blocks in the program:
+    ///
     /// ```java
     /// openWorld("""
     ///         .....
@@ -708,8 +788,9 @@ public final class Karel {
     ///         ...E.
     ///         """);
     /// ```
-    /// Same characters as the built-in worlds: `.` empty, `*` beeper, `2`-`9` that many,
-    /// `#` wall, `> ^ < v` Karel, `E N W S` Karel on a beeper.
+    ///
+    /// Same characters as the built-in worlds: `.` empty, `*` beeper, `2`-`9`
+    /// that many, `#` wall, `> ^ < v` Karel, `E N W S` Karel on a beeper.
     // [impl->req~world.own~1]
     public static void openWorld(String start, String goal) {
         open("own world", new WorldMaps("Own world: reach the goal shown by Show goal", start, goal));
@@ -853,8 +934,8 @@ public final class Karel {
 
     // ------------------------------------------------------------------ sonar (since 1.2.0)
 
-    /// How many times Karel can move forward before reaching the wall ahead: 0 if the wall is directly
-    /// in front of Karel.
+    /// How many times Karel can move forward before reaching the wall ahead: 0
+    /// if the wall is directly in front of Karel.
     // [impl->req~cond.sonar~1]
     public static int distanceToWall() {
         synchronized (LOCK) {
@@ -867,8 +948,9 @@ public final class Karel {
         }
     }
 
-    /// How many times Karel has to move forward to stand on the next beeper ahead: 1 if the beeper is on the
-    /// cell in front of Karel, or -1 if there is no beeper between Karel and the wall ahead.
+    /// How many times Karel has to move forward to stand on the next beeper
+    /// ahead: 1 if the beeper is on the cell in front of Karel, or -1 if there
+    /// is no beeper between Karel and the wall ahead.
     public static int distanceToBeeper() {
         synchronized (LOCK) {
             State s = current();
@@ -981,7 +1063,8 @@ public final class Karel {
         });
     }
 
-    /// Shows the recorded state after step `index`; called when the user drags the step slider.
+    /// Shows the recorded state after step `index`; called when the user drags
+    /// the step slider.
     // [impl->req~window.step-slider~1]
     private static void selectStep(int index) {
         synchronized (LOCK) {
@@ -1090,8 +1173,9 @@ public final class Karel {
         JLabel speedCaption = new JLabel("Speed");
         Dimension caption = speedCaption.getPreferredSize();
         stepCaption.setPreferredSize(caption);
-        stepLabel.setPreferredSize(new Dimension(
-                stepLabel.getFontMetrics(stepLabel.getFont()).stringWidth("0000 / 0000"), caption.height));
+        stepLabel.setPreferredSize(new Dimension(stepLabel.getFontMetrics(stepLabel.getFont())
+                .stringWidth("0000 / 0000"),
+                        caption.height));
         JPanel stepRow = new JPanel(new BorderLayout(8, 0));
         stepRow.add(stepCaption, BorderLayout.WEST);
         stepRow.add(stepSlider, BorderLayout.CENTER);
@@ -1172,7 +1256,8 @@ public final class Karel {
             for (int row = 0; row < s.height; row++) {
                 if (s.beepers[col][row] > 1) {
                     boolean underKarel = col == s.x && row == s.y;
-                    drawCount(g, s.beepers[col][row], col, row, underKarel, underKarel ? new Color(0x2E7D32) : Color.WHITE);
+                    drawCount(g, s.beepers[col][row], col, row, underKarel,
+                            underKarel ? new Color(0x2E7D32) : Color.WHITE);
                 }
             }
         }
@@ -1188,7 +1273,8 @@ public final class Karel {
 
         if (withGoal && goal != null) {
             g.setColor(new Color(0xE65100));
-            g.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1, new float[] {4, 4}, 0));
+            g.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1,
+                    new float[] {4, 4}, 0));
             for (int col = 0; col < s.width; col++) {
                 for (int row = 0; row < s.height; row++) {
                     if (goal.beepers[col][row] > 0) {
@@ -1196,7 +1282,8 @@ public final class Karel {
                     }
                     if (goal.beepers[col][row] > 1) {
                         boolean underKarel = col == goal.x && row == goal.y;
-                        drawCount(g, goal.beepers[col][row], col, row, underKarel, new Color(0xE65100));
+                        drawCount(g, goal.beepers[col][row], col, row, underKarel,
+                                new Color(0xE65100));
                     }
                 }
             }
@@ -1207,8 +1294,7 @@ public final class Karel {
     // [impl->req~dev.snapshot~1]
     private static void saveSnapshot(String file, boolean withGoal) {
         int scale = 2;
-        BufferedImage image = new BufferedImage((state.width * CELL + 2) * scale, (state.height * CELL + 2) * scale,
-                BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage((state.width * CELL + 2) * scale, (state.height * CELL + 2) * scale, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = image.createGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
@@ -1223,8 +1309,10 @@ public final class Karel {
         }
     }
 
-    /// Writes `n` into the cell: centred, or small in the top right corner when Karel stands on it.
-    private static void drawCount(Graphics2D g, int n, int col, int row, boolean corner, Color color) {
+    /// Writes `n` into the cell: centred, or small in the top right corner when
+    /// Karel stands on it.
+    private static void drawCount(Graphics2D g, int n, int col,
+            int row, boolean corner, Color color) {
         Font old = g.getFont();
         g.setFont(old.deriveFont(Font.BOLD, corner ? CELL * 0.30f : CELL * 0.38f));
         String text = Integer.toString(n);
@@ -1240,19 +1328,25 @@ public final class Karel {
     private static Polygon diamond(int px, int py, double size) {
         int c = CELL / 2;
         int r = (int) (CELL * size);
-        return new Polygon(new int[] {px + c, px + c + r, px + c, px + c - r},
-                new int[] {py + c - r, py + c, py + c + r, py + c}, 4);
+        return new Polygon(
+                new int[] {px + c, px + c + r, px + c,
+                        px + c - r},
+                new int[] {py + c - r, py + c, py + c + r,
+                        py + c},
+                4);
     }
 
     /// Triangle pointing in Karel's direction.
-    private static Polygon robot(int col, int row, int dir, double size) {
+    private static Polygon robot(int col, int row, int dir,
+            double size) {
         double cx = col * CELL + CELL / 2.0;
         double cy = row * CELL + CELL / 2.0;
         double r = CELL * size;
         double angle = -dir * Math.PI / 2;
         Polygon p = new Polygon();
         for (double a : new double[] {0, 2.4, -2.4}) {
-            p.addPoint((int) Math.round(cx + r * Math.cos(angle + a)), (int) Math.round(cy + r * Math.sin(angle + a)));
+            p.addPoint((int) Math.round(cx + r * Math.cos(angle + a)),
+                    (int) Math.round(cy + r * Math.sin(angle + a)));
         }
         return p;
     }

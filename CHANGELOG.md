@@ -11,7 +11,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ### Changed
 
-- Readme: tasks 17 and 18 in the task table; the own-worlds section no longer names the version that introduced them, that is this changelog's job.
+- Engine formatted with Netflix jfmt 0.9.0; `./jfmt.sh --check` runs in CI.
+- The task table lists tasks 17 and 18; the own-worlds section no longer names the version that introduced them, that is this changelog's job.
 
 ## [1.3.1] – 2026-10-28
 

@@ -71,18 +71,19 @@ The `prose` job of CI runs four checks on every push, set up after
 Locally:
 
 ```sh
-npx --yes markdownlint-cli2 "**/*.md"
+npm ci && npm run lint          # markdownlint and textlint, versions pinned in package.json
 ./gg.cmd gh/crate-ci/typos --format brief .
 ./gg.cmd gh/errata-ai/vale sync && ./gg.cmd gh/errata-ai/vale README.md CONTRIBUTING.md CHANGELOG.md
-npx --yes --package textlint --package textlint-filter-rule-allowlist --package textlint-rule-terminology --package textlint-rule-write-good textlint README.md CONTRIBUTING.md CHANGELOG.md
 ./gg.cmd jbang com.github.nbbrd.heylogs:heylogs-cli:0.19.1:bin check CHANGELOG.md
 ```
+
+`package.json` exists only for these checks; the engine has no npm dependency. Dependabot updates the npm packages and the GitHub Actions weekly.
 
 Visual Studio Code users get both as recommended extensions (`.vscode/extensions.json`).
 
 ## Style
 
-- Java: Netflix jfmt (Oracle conventions, 4 spaces), `{` on the same line, braces also around one-line bodies. Identifiers and comments in English.
+- Java: [Netflix jfmt](https://github.com/Netflix/jfmt) (Oracle conventions, 4 spaces), `{` on the same line, braces also around one-line bodies. Identifiers and comments in English. The tool formats the engine: `./jfmt.sh` formats `src/karel/Karel.java`, `./jfmt.sh --check` is what CI runs (jar from Maven Central, version and checksum pinned in the script). The starter and the sample solutions follow the same conventions by hand: jfmt would expand `import static karel.Karel.*;` into single imports, and that line is part of what students learn.
 - Doc comments as `///` Markdown doc comments (JEP 467), not `/** ... */`: backticks for code, fenced ```java blocks for examples. IntelliJ renders them in the quick documentation popup.
 - Solutions follow the course rules: store a result in a variable, then use it (no nested calls); one method per idea; names are verbs.
 - Locale: never call `toLowerCase()`/`toUpperCase()`/`String.format` without a locale; use `Locale.ROOT` (a Turkish student machine turned `FILL_THE_HOLES` into `fıll_the_holes`, 1.3.1). CI runs the starter with `-Duser.language=tr -Duser.country=TR`.
