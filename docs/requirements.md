@@ -250,8 +250,28 @@ Covers:
 
 `req~window.edit~1`
 
-With the Edit box ticked, a click on a cell cycles it through empty, beeper and wall, and a right click puts Karel on the cell or turns it;
+With the Edit box ticked, a click on a cell cycles it through empty, beeper and wall, a right click turns Karel on its cell, adds a beeper to a cell with beepers (up to 9), moves Karel to an empty cell in the same direction and removes a wall, and Shift+click puts Karel on any free cell;
 Copy map puts the shown world on the clipboard as a text map, ready for `openWorld(start, goal)`.
+
+Needs: impl
+
+Covers:
+
+* `feat~window~1`
+
+`req~window.edit-restart~1`
+
+An edit makes the shown world the new start: the step slider and Replay no longer show the old run, they begin again at step 0 of the edited world.
+
+Needs: impl
+
+Covers:
+
+* `feat~window~1`
+
+`req~window.run-again~1`
+
+Run again starts `main` of the program once more without leaving the window, from the start of the last run or from the edited world; `openWorld` then keeps that world, the goal stays the same.
 
 Needs: impl
 

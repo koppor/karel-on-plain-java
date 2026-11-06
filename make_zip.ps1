@@ -1,6 +1,8 @@
 # Builds Karel-v<version>.zip: the complete IntelliJ project students open (template in intellij/ + src/karel/Karel.java + src/FirstKarelProgram.java).
 # No top-level folder in the ZIP, so that "Extract all" yields exactly one folder named like the ZIP (Karel-v1.3.1); IntelliJ shows that
 # folder name as the project name. Usage: .\make_zip.ps1   (or .\make_zip.ps1 -Name KarelExercise01 for the legacy name)
+#requires -Version 7
+# PowerShell 7: Windows PowerShell 5.1 writes backslashes into the ZIP entries, which breaks unpacking on macOS and Linux
 param([string]$Name = "Karel")
 $name = $Name
 $k = $PSScriptRoot

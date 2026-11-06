@@ -20,6 +20,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.StackWalker.Option;
+import java.lang.StackWalker.StackFrame;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,7 +51,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 /// Karel the Robot for PROG1 (THU), plain Java 25 with Swing, no libraries.
 ///
-/// Version 1.4.0 (2026-11-04). Semantic versioning: major = commands change
+/// Version 1.4.1 (2026-11-06). Semantic versioning: major = commands change
 /// incompatibly, minor = new worlds or features, patch = fixes.
 ///
 /// Usage in a compact source file next to the folder `karel`:
@@ -82,8 +88,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 public final class Karel {
 
     // [impl->req~dev.version~1]
-    public static final String VERSION = "1.4.0";
-    public static final String RELEASE_DATE = "2026-11-04";
+    public static final String VERSION = "1.4.1";
+    public static final String RELEASE_DATE = "2026-11-06";
 
     /// Thrown when Karel cannot carry out a command.
     // [impl->req~cmd.error-message~1]
@@ -599,7 +605,7 @@ public final class Karel {
     }
 
     /// A binary number of eight bits in a corridor: a beeper is a 1, the lowest
-    /// bit on the right; Karel right of it, facing west.
+    /// bit at the east end; Karel east of it, facing west.
     private static char[][] binaryRow(int n) {
         char[][] cells = grid(10, 3, '#');
         Arrays.fill(cells[1], '.');
@@ -613,7 +619,7 @@ public final class Karel {
     }
 
     /// Task 17: a random number; the goal is the number plus one, Karel on the
-    /// bit it changed last (255 + 1 carries into the spare cell on the left).
+    /// bit it changed last (255 + 1 carries into the cell west of the highest bit).
     private static WorldMaps addOne() {
         int n = RANDOM.nextInt(256);
         char[][] goal = grid(10, 3, '#');
@@ -625,7 +631,7 @@ public final class Karel {
         }
         int changed = Integer.numberOfTrailingZeros(~n); // the lowest 0 of n becomes the 1
         goal[1][8 - changed] = 'W';
-        return new WorldMaps("The row is a binary number: a beeper is a 1, an empty cell a 0, the lowest bit on the right. Add 1 to the number; Karel ends on the bit it changed last, facing west. The number changes on every run.",
+        return new WorldMaps("The row is a binary number: a beeper is a 1, an empty cell a 0, the lowest bit at the east end. Add 1 to the number; Karel ends on the bit it changed last, facing west. The number changes on every run.",
                 map(binaryRow(n)), map(goal));
     }
 
@@ -635,7 +641,7 @@ public final class Karel {
         int n = 1 + RANDOM.nextInt(255);
         char[][] goal = binaryRow(n);
         goal[1][9] = 'E';
-        return new WorldMaps("The row is a binary number as in addOne. Read it and build a pile with that many beepers on the cell where Karel starts; the bits stay as they are. Karel ends on the pile, facing east. The number changes on every run.",
+        return new WorldMaps("The row is a binary number as in “Add One”. Read it and build a pile with that many beepers on the cell where Karel starts; the bits stay as they are. Karel ends on the pile, facing east. The number changes on every run.",
                 map(binaryRow(n)), map(goal) + "karel on " + n + "\n");
     }
 
@@ -768,6 +774,7 @@ public final class Karel {
     private static JCheckBox showGoal;
     private static JCheckBox edit;
     private static JButton replay;
+    private static JButton runAgain;
     private static JSlider stepSlider;
     private static JLabel stepLabel;
 
@@ -779,6 +786,19 @@ public final class Karel {
 
     private static String finalMessage;
     private static Color finalColor;
+
+    /// Largest stack in Edit: a text map holds one digit per cell.
+    private static final int MAX_EDIT_STACK = 9;
+
+    /// The class of the running program, for Run again.
+    private static Class<?> programClass;
+
+    /// True from `openWorld` to the end of the program.
+    private static volatile boolean running;
+
+    /// Set by Run again: `openWorld` then starts from this map, not from the
+    /// program's world.
+    private static volatile String restartMap;
 
     private Karel() {}
 
@@ -853,9 +873,17 @@ public final class Karel {
 
     // [impl->req~world.open-once~1]
     private static void open(String name, WorldMaps maps) {
+        if (restartMap != null) {
+            restart();
+            return;
+        }
         if (state != null) {
             throw new KarelException("openWorld can only be called once per run");
         }
+        programClass = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).walk(frames -> frames.map(StackFrame::getDeclaringClass)
+                .filter(c -> c != Karel.class)
+                .findFirst()
+                .orElse(null));
         worldName = name;
         taskText = maps.text();
         System.out.println(worldName + ": " + taskText);
@@ -873,11 +901,6 @@ public final class Karel {
             saveSnapshot(snapshot, Boolean.getBoolean("karel.snapshotGoal"));
             System.exit(0);
         }
-        Thread program = Thread.currentThread();
-        program.setUncaughtExceptionHandler((thread, e) -> {
-            error = e;
-            e.printStackTrace();
-        });
         if (!HEADLESS) {
             try {
                 SwingUtilities.invokeAndWait(Karel::createWindow);
@@ -886,7 +909,87 @@ public final class Karel {
             }
             pause();
         }
+        watchProgram();
+    }
+
+    /// Reports errors of the program and checks the goal when it ends.
+    private static void watchProgram() {
+        running = true;
+        Thread program = Thread.currentThread();
+        program.setUncaughtExceptionHandler((thread, e) -> {
+            error = e;
+            e.printStackTrace();
+        });
         new Thread(() -> finish(program)).start();
+    }
+
+    /// `openWorld` during Run again: the world in the window stays, the program
+    /// starts from `restartMap`.
+    // [impl->req~window.run-again~1]
+    private static void restart() {
+        int last;
+        synchronized (LOCK) {
+            state = new State(restartMap);
+            restartMap = null;
+            HISTORY.clear();
+            HISTORY.add(state.toMap());
+            last = 0;
+            steps = 0;
+            error = null;
+        }
+        showStep(last, last);
+        updateStatus("Step 0", Color.BLACK);
+        pause();
+        watchProgram();
+    }
+
+    /// Runs `main` of the program again, from the start of the current run or
+    /// from the edited world.
+    // [impl->req~window.run-again~1]
+    private static void runAgain() {
+        synchronized (LOCK) {
+            restartMap = HISTORY.get(0);
+        }
+        replay.setEnabled(false);
+        stepSlider.setEnabled(false);
+        runAgain.setEnabled(false);
+        new Thread(() -> {
+            try {
+                invokeMain();
+            } catch (InvocationTargetException e) {
+                if (e.getCause() instanceof RuntimeException cause) {
+                    throw cause;
+                }
+                if (e.getCause() instanceof Error cause) {
+                    throw cause;
+                }
+                throw new IllegalStateException(e.getCause());
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalStateException(e);
+            }
+        })
+                .start();
+    }
+
+    private static void invokeMain() throws ReflectiveOperationException {
+        Method main;
+        try {
+            main = programClass.getDeclaredMethod("main");
+        } catch (NoSuchMethodException e) {
+            main = programClass.getDeclaredMethod("main", String[].class);
+        }
+        main.setAccessible(true);
+        Object target = null;
+        if (!Modifier.isStatic(main.getModifiers())) {
+            Constructor<?> constructor = programClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            target = constructor.newInstance();
+        }
+        if (main.getParameterCount() == 0) {
+            main.invoke(target);
+        } else {
+            main.invoke(target, (Object) new String[0]);
+        }
     }
 
     // ------------------------------------------------------------------ commands
@@ -1095,9 +1198,11 @@ public final class Karel {
             finalMessage = message;
             finalColor = color;
             updateStatus(message, color);
+            running = false;
             SwingUtilities.invokeLater(() -> {
                 replay.setEnabled(true);
                 stepSlider.setEnabled(true);
+                runAgain.setEnabled(true);
             });
         }
     }
@@ -1113,8 +1218,10 @@ public final class Karel {
         });
     }
 
-    /// Edit mode: a left click cycles the cell (empty, beeper, wall), a right
-    /// click puts Karel on the cell or, on Karel's cell, turns it left.
+    /// Edit mode: a left click cycles the cell (empty, beeper, wall). A right
+    /// click turns Karel on its cell, adds a beeper to a cell with beepers, up
+    /// to `MAX_EDIT_STACK`, moves Karel to an empty cell in the same direction,
+    /// and removes a wall. Shift+click puts Karel on any free cell, also on beepers.
     // [impl->req~window.edit~1]
     private static void editCell(MouseEvent e) {
         synchronized (LOCK) {
@@ -1132,13 +1239,17 @@ public final class Karel {
                 return;
             }
             boolean karelHere = col == state.x && row == state.y;
-            if (SwingUtilities.isRightMouseButton(e)) {
-                if (karelHere) {
-                    state.dir = (state.dir + 1) % 4;
-                } else if (!state.block[col][row]) {
+            boolean right = SwingUtilities.isRightMouseButton(e);
+            if (karelHere && (right || e.isShiftDown())) {
+                state.dir = (state.dir + 1) % 4;
+            } else if (e.isShiftDown()
+                    || (right && !state.block[col][row] && state.beepers[col][row] == 0)) {
+                if (!state.block[col][row]) {
                     state.x = col;
                     state.y = row;
                 }
+            } else if (right && state.beepers[col][row] > 0) {
+                state.beepers[col][row] = Math.min(state.beepers[col][row] + 1, MAX_EDIT_STACK);
             } else if (karelHere) {
                 state.beepers[col][row] = state.beepers[col][row] == 0 ? 1 : 0;
             } else if (state.block[col][row]) {
@@ -1150,7 +1261,23 @@ public final class Karel {
                 state.block[col][row] = true;
             }
         }
+        restartFromEdit();
         panel.repaint();
+    }
+
+    /// An edit makes the shown world the new start: the recorded run belongs to
+    /// the old world, so the step slider and Replay begin again here.
+    // [impl->req~window.edit-restart~1]
+    private static void restartFromEdit() {
+        synchronized (LOCK) {
+            HISTORY.clear();
+            HISTORY.add(state.toMap());
+        }
+        showStep(0, 0);
+        replay.setEnabled(false);
+        stepSlider.setEnabled(false);
+        runAgain.setEnabled(!running);
+        updateStatus("Edited: Run again starts the program in this world", Color.BLACK);
     }
 
     /// Shows the recorded state after step `index`; called when the user drags
@@ -1180,6 +1307,7 @@ public final class Karel {
         SwingUtilities.invokeLater(() -> {
             replay.setEnabled(true);
             stepSlider.setEnabled(true);
+            runAgain.setEnabled(true);
         });
     }
 
@@ -1246,7 +1374,7 @@ public final class Karel {
         showGoal.addActionListener(e -> panel.repaint());
         // [impl->req~window.edit~1]
         edit = new JCheckBox("Edit");
-        edit.setToolTipText("Click a cell: empty, beeper, wall; right-click: Karel there, or turn Karel");
+        edit.setToolTipText("Click: empty, beeper, wall; right-click: empty cell: Karel there, beepers: one more, Karel: turn; Shift+click: Karel there");
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -1304,14 +1432,21 @@ public final class Karel {
         top.add(checks, BorderLayout.EAST);
         replay = new JButton("Replay");
         replay.setEnabled(false);
+        // [impl->req~window.run-again~1]
+        runAgain = new JButton("Run again");
+        runAgain.setToolTipText("Runs the program again from the start of this world, also after Edit");
+        runAgain.setEnabled(false);
+        runAgain.addActionListener(e -> runAgain());
         replay.addActionListener(e -> {
             replay.setEnabled(false);
             stepSlider.setEnabled(false);
+            runAgain.setEnabled(false);
             new Thread(Karel::replay).start();
         });
         JButton close = new JButton("Close");
         close.addActionListener(e -> System.exit(0));
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        buttons.add(runAgain);
         buttons.add(replay);
         buttons.add(Box.createHorizontalStrut(8));
         buttons.add(close);

@@ -69,7 +69,7 @@ Errors stop the program with a message in the Run window, for example "Karel can
 - **Show goal**: the goal as an orange outline.
 - Status line: "Goal reached in n steps", or what is still wrong, or the error.
 - **Replay** plays the run again; **Close** ends the program.
-- **Edit** box: a click on a cell cycles it through empty, beeper and wall; a right click puts Karel on the cell or turns it. **Copy map** copies the shown world as a text map for `openWorld(start, goal)`.
+- **Edit** box: a click on a cell cycles it through empty, beeper and wall; a right click turns Karel on its cell, adds a beeper to a cell with beepers (up to 9), moves Karel to an empty cell and removes a wall; Shift+click puts Karel on any free cell, also on beepers. An edit makes the shown world the new start; **Run again** runs your program there. **Copy map** copies the shown world as a text map for `openWorld(start, goal)`.
 
 ## Worlds and tasks
 
@@ -101,8 +101,8 @@ every run; your program must work for all.
 | 14    | `BUILD_THE_STAIRCASE` | Build stacks of 1, 2, 3, ... 9 beepers on the nine cells ahead and stop on the last one.                                                                                       |
 | 15    | `COLLECT_THE_STACKS`  | Three stacks of beepers lie in the corridor. Collect all and drop the total as one stack at the east wall (random).                                                            |
 | 16    | `FENCE_THE_FIELD`     | Put a beeper on every border cell of the square field and return to the corner, facing east. The size changes on every run (random).                                           |
-| 17    | `ADD_ONE`             | The row is a binary number: a beeper is a 1, an empty cell a 0, the lowest bit on the right. Add 1 to the number; Karel ends on the bit it changed last, facing west (random). |
-| 18    | `BINARY_TO_PILE`      | The row is a binary number as in `addOne`. Build a pile with that many beepers on the cell where Karel starts; the bits stay. Karel ends on the pile, facing east (random).    |
+| 17    | `ADD_ONE`             | The row is a binary number: a beeper is a 1, an empty cell a 0, the lowest bit at the east end. Add 1 to the number; Karel ends on the bit it changed last, facing west (random). |
+| 18    | `BINARY_TO_PILE`      | The row is a binary number as in “Add One”. Build a pile with that many beepers on the cell where Karel starts; the bits stay. Karel ends on the pile, facing east (random).    |
 
 ## Own worlds
 

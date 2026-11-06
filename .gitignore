@@ -18,3 +18,5 @@ KarelExercise01/
 !/.vale/styles/config/
 # npm dev dependencies of the prose checks (package.json)
 /node_modules/
+# unpacked release ZIP
+/Karel-v*/

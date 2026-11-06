@@ -5,6 +5,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), ver
 
 ## [Unreleased]
 
+## [1.4.1] – 2026-11-06
+
+### Added
+
+- **Run again** in the window: runs the program once more from the start of the last run or from the edited world, without leaving the window.
+
+### Changed
+
+- Edit: a right click still turns Karel on its cell and still moves it to an empty cell, keeping its direction; on beepers it now adds one, up to 9, and on a wall it removes the wall. Shift+click puts Karel on any free cell, also on beepers.
+- Task texts of worlds 17 and 18: the lowest bit is “at the east end”, and task 18 refers to “Add One” by its task name.
+
+### Fixed
+
+- After an edit, the step slider and Replay no longer go back to the old world: the edited world is the new start.
+
 ## [1.4.0] – 2026-11-04
 
 ### Added
@@ -32,6 +47,7 @@ Initial public release.
 - Requirements in `docs/requirements.md` with OpenFastTrace tags in the code; CI compiles with `-Werror`, runs the starter headless (also under a Turkish locale) and traces the requirements.
 - `make_zip.ps1` builds the project students open, `Karel-v<version>.zip`.
 
-[Unreleased]: https://github.com/koppor/karel-on-plain-java/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/koppor/karel-on-plain-java/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/koppor/karel-on-plain-java/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/koppor/karel-on-plain-java/compare/v1.3.1...v1.4.0
 [1.3.1]: https://github.com/koppor/karel-on-plain-java/releases/tag/v1.3.1
