@@ -9,7 +9,7 @@
     "lint:text": "textlint --format github README.md CONTRIBUTING.md CHANGELOG.md"
   },
   "devDependencies": {
-    "markdownlint-cli2": "0.24.0",
+    "markdownlint-cli2": "0.24.1",
     "textlint": "15.8.0",
     "textlint-filter-rule-allowlist": "4.0.0",
     "textlint-rule-terminology": "5.2.16",
